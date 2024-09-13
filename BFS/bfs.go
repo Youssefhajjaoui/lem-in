@@ -9,10 +9,16 @@ type Vertex struct{
 	// liks from the current room to other rooms
 	adjacentVerteces []*Vertex 
 }
+// still don't know how to make this works 
+type Graph struct{
+	Verteces []*Vertex
+}
 
+func NewGraph()*Graph{
+	return &Graph{Verteces : []*Vertex{}}
+}
 
-
-func New(name string)*Vertex{
+func NewVertex(name string)*Vertex{
     return &Vertex{Name : name}
 }
 
