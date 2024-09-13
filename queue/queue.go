@@ -1,6 +1,5 @@
 package queue
 
-
 // define a type
 type Node struct{
 	Item any 
@@ -23,29 +22,29 @@ func (q *Queue)Dequeue()*Node{
 	if q.Size == 0 {
 		return 	nil 
 	}	
+	dq := q.Head 
 	if q.Head.Next == nil {
 		q.Head = nil
 		q.Tail = nil
-		return nil
+	}else{
+		q.Head = q.Head.Next
+		q.Head.Prev= nil
 	}
-	dq := q.Head 
-	q.Size = q.Size - 1
-	q.Head = q.Head.Next
+	q.Size--
 	return dq
 
 }
 
 func (q *Queue)Enqueue(item any){
-	node := Node{Item : item , Prev : nil, Next : nil }
-	q.Size = q.Size + 1 
+	node := &Node{Item : item , Prev : nil, Next : nil }
+	q.Size++
 	if q.Head == nil {
-		q.Head = &node
-		q.Tail = &node
+		q.Head = node
+		q.Tail = node
 	}else{
-		q.Tail.Next = &node
+		q.Tail.Next = node
 		node.Prev = q.Tail
-		q.Tail = &node
-		node.Next = nil
+		q.Tail = node
 	}
 }
 

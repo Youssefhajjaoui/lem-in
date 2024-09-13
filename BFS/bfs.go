@@ -9,8 +9,8 @@ type Vertex struct{
 	// liks from the current room to other rooms
 	adjacentVerteces []*Vertex 
 }
-// still don't know how to make this works 
 
+// still don't know how to make this works 
 func NewVertex(name string)*Vertex{
     return &Vertex{Name : name}
 }
@@ -23,6 +23,7 @@ func (v *Vertex)Add_adjacent_vertex(vertex *Vertex){
 	v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	vertex.Add_adjacent_vertex(v)
 }
+
 // check if if the v is already related to vertex
 func (v *Vertex)include(vertex *Vertex)bool{
     for _, e := range v.adjacentVerteces {
