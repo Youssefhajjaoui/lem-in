@@ -9,9 +9,9 @@ func TestQueue(t *testing.T) {
     q := New()
 
     // Test adding items to the queue
-    q.Add(0)
-    q.Add(1)
-    q.Add(2)
+    q.Enqueue(0)
+    q.Enqueue(1)
+    q.Enqueue(2)
 
     // Define a helper function to check queue contents
     checkQueueContents := func(expected []any) {
