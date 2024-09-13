@@ -24,6 +24,8 @@ func (q *Queue)Dequeue()*Node{
 		return 	nil 
 	}	
 	if q.Head.Next == nil {
+		q.Head = nil
+		q.Tail = nil
 		return nil
 	}
 	dq := q.Head 

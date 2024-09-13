@@ -1,5 +1,8 @@
 package bfs 
 
+import "fmt"
+
+
 type Graph struct{
 	Verteces []*Vertex
 	Start *Vertex // the starting room
@@ -11,16 +14,13 @@ func NewGraph()*Graph{
 }
 
 
-func (g *Graph)AddRoom(v *Vertex){
+func (g *Graph)Add(v *Vertex){
 	g.Verteces = append(g.Verteces, v)
 }
 
 
-
-
-
-
-
-
-
-
+func (g *Graph)Traverse(){
+	for _, e := range g.Start.adjacentVerteces{
+		fmt.Println(e.Name)
+	}
+}
