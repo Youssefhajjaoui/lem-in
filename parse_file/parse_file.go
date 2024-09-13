@@ -43,7 +43,7 @@ func GetNodes(arr []string) ([]int, error) {
 		if Len := len(strings.Split(v, " ")); Len == 3 {
 			intnode, err := strconv.Atoi(strings.Split(v, "")[0])
 			if err != nil {
-				return nil, errors.New("can't convert it")
+				continue
 			}
 			Nodes = append(Nodes, intnode)
 		}
@@ -57,5 +57,13 @@ func ProcessInput(filename string, g *bfs.Graphs) {
 		fmt.Println(err)
 		return
 	}
-	Nodes:=GetNodes()
+	Nodes, err := GetNodes(input)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	Rooms := g.ParsetoNode(Nodes)
+	g.GetEdges(input, Rooms)
+	fmt.Println(Rooms[0].Edges)
+	g.PrintGraph()
 }

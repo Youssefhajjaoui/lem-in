@@ -1,7 +1,10 @@
 package main
 
 import (
+	"os"
+
 	bfs "lem-in/BFS"
+	"lem-in/parse_file"
 )
 
 func main() {
@@ -9,7 +12,7 @@ func main() {
 
 	// Create a new graph
 	g := &bfs.Graphs{}
-	
+	parse_file.ProcessInput(os.Args[1], g)
 	// Add nodes (rooms)
 	// node0 := g.addNode(0)
 	// node1 := g.addNode(1)
@@ -35,5 +38,4 @@ func main() {
 	// g.addEdge(node6, node5)
 
 	// // Print the adjacency list of the graph
-	g.printGraph()
 }

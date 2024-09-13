@@ -1,7 +1,6 @@
 package bfs
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -29,7 +28,7 @@ func (graph *Graphs) addEdge(U, V *Node) {
 	V.Edges = append(V.Edges, U)
 }
 
-func (graph *Graphs) printGraph() {
+func (graph *Graphs) PrintGraph() {
 	for _, n := range graph.Nodes {
 		fmt.Printf("Room %d: ", n.Value)
 		for _, neighbor := range n.Edges {
@@ -51,13 +50,13 @@ func (g *Graphs) ParsetoNode(values []int) []*Node {
 func (g *Graphs) GetEdges(arr []string, Nodes []*Node) error {
 	for _, v := range arr {
 		if Len := len(strings.Split(v, " ")); Len == 2 {
-			node1, err := strconv.Atoi(strings.Split(v, "")[0])
+			node1, err := strconv.Atoi(strings.Split(v, "-")[0])
 			if err != nil {
-				return errors.New("can't convert it")
+				continue
 			}
-			node2, err := strconv.Atoi(strings.Split(v, "")[1])
+			node2, err := strconv.Atoi(strings.Split(v, "-")[1])
 			if err != nil {
-				return errors.New("can't convert it")
+				continue
 			}
 			Node1 := g.GetnodbyValue(node1)
 			Node2 := g.GetnodbyValue(node2)
