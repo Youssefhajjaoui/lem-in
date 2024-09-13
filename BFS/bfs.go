@@ -10,13 +10,6 @@ type Vertex struct{
 	adjacentVerteces []*Vertex 
 }
 // still don't know how to make this works 
-type Graph struct{
-	Verteces []*Vertex
-}
-
-func NewGraph()*Graph{
-	return &Graph{Verteces : []*Vertex{}}
-}
 
 func NewVertex(name string)*Vertex{
     return &Vertex{Name : name}
@@ -39,3 +32,25 @@ func (v *Vertex)include(vertex *Vertex)bool{
     }
     return false
 }
+//////////////////////////////////////////////////////////////
+type Graph struct{
+	Verteces []*Vertex
+}
+
+func NewGraph()*Graph{
+	return &Graph{Verteces : []*Vertex{}}
+}
+
+
+func (g *Graph)Add(v *Vertex){
+	g.Verteces = append(g.Verteces, v)
+}
+
+
+
+
+
+
+
+
+
