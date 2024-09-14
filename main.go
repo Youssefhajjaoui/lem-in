@@ -18,6 +18,14 @@ func main(){
 	v10 := bfs.NewVertex("v10")
 	v11 := bfs.NewVertex("v11")
 
+	v20 := bfs.NewVertex("v20")
+	v30 := bfs.NewVertex("v30")
+	v40 := bfs.NewVertex("v40")
+	v50 := bfs.NewVertex("v50")
+	v60 := bfs.NewVertex("v60")
+	v70 := bfs.NewVertex("v70")
+	v80 := bfs.NewVertex("v80")
+
 	v1.Add_adjacent_vertex(v2)
 	v1.Add_adjacent_vertex(v3)
 	v1.Add_adjacent_vertex(v4)
@@ -41,7 +49,16 @@ func main(){
 	v6.Add_adjacent_vertex(v11)
 	v6.Add_adjacent_vertex(v10)
 	v11.Add_adjacent_vertex(v10)
-
+	
+	v1.Add_adjacent_vertex(v20)
+	v20.Add_adjacent_vertex(v30)
+	v30.Add_adjacent_vertex(v8)
+	v8.Add_adjacent_vertex(v40)
+	v40.Add_adjacent_vertex(v50)
+	v50.Add_adjacent_vertex(v60)
+	v60.Add_adjacent_vertex(v70)
+	v70.Add_adjacent_vertex(v80)
+	v80.Add_adjacent_vertex(v10)
 
 	graph.Start = v1
 

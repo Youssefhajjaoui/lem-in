@@ -231,7 +231,9 @@ func (g *Graph)FindAllWays(name string)[][]string{
 		paths = append(paths , ss... )
 		for _, s := range ss {
 			for _, t := range s {
-				block[t] = true
+				if t != name {
+					block[t] = true
+				}
 			}
 		}
 	}
