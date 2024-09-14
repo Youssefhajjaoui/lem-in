@@ -2,44 +2,50 @@ package bfs
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
-type Node struct {
-	Value int
-	Edges []*Node
+type Vertex struct {
+	// name of the room
+	Name string
+	// cordonate of the room
+	// crd [2]int
+	// liks from the current room to other rooms
+	adjacentVerteces []*Vertex
 }
 
 type Graphs struct {
-	Nodes []*Node
+	Verteces []*Vertex
+	Start    *Vertex
+	End      *Vertex
 }
 
-func (graph *Graphs) addNode(value int) *Node {
-	node := &Node{
-		Value: value,
+func (graph *Graphs) addNode(value string) *Vertex {
+	node := &Vertex{
+		Name:             value,
+		adjacentVerteces: []*Vertex{},
 	}
-	graph.Nodes = append(graph.Nodes, node)
+	graph.Verteces = append(graph.Verteces, node)
 	return node
 }
 
-func (graph *Graphs) addEdge(U, V *Node) {
-	U.Edges = append(U.Edges, V)
-	V.Edges = append(V.Edges, U)
+func (graph *Graphs) addEdge(U, V *Vertex) {
+	U.adjacentVerteces = append(U.adjacentVerteces, V)
+	V.adjacentVerteces = append(V.adjacentVerteces, U)
 }
 
 func (graph *Graphs) PrintGraph() {
-	for _, n := range graph.Nodes {
-		fmt.Printf("Room %d: ", n.Value)
-		for _, neighbor := range n.Edges {
-			fmt.Printf("%d <-> ", neighbor.Value)
+	for _, n := range graph.Verteces {
+		fmt.Printf("Room %d: ", n.Name)
+		for _, neighbor := range n.adjacentVerteces {
+			fmt.Printf("%d <-> ", neighbor.Name)
 		}
 		fmt.Println("nil")
 	}
 }
 
-func (g *Graphs) ParsetoNode(values []int) []*Node {
-	Nodes := []*Node{}
+func (g *Graphs) ParsetoNode(values []string) []*Vertex {
+	Nodes := []*Vertex{}
 	for i := 0; i < len(values); i++ {
 		Node := g.addNode(values[i])
 		Nodes = append(Nodes, Node)
@@ -47,28 +53,20 @@ func (g *Graphs) ParsetoNode(values []int) []*Node {
 	return Nodes
 }
 
-func (g *Graphs) GetEdges(arr []string, Nodes []*Node) error {
+func (g *Graphs) GetEdges(arr []string, Nodes []*Vertex) error {
 	for _, v := range arr {
 		if Len := len(strings.Split(v, "-")); Len == 2 {
-			node1, err := strconv.Atoi(strings.Split(v, "-")[0])
-			if err != nil {
-				continue
-			}
-			node2, err := strconv.Atoi(strings.Split(v, "-")[1])
-			if err != nil {
-				continue
-			}
-			Node1 := g.GetnodbyValue(node1)
-			Node2 := g.GetnodbyValue(node2)
+			Node1 := g.GetnodbyValue(strings.Split(v, "-")[0])
+			Node2 := g.GetnodbyValue(strings.Split(v, "-")[1])
 			g.addEdge(Node1, Node2)
 		}
 	}
 	return nil
 }
 
-func (g *Graphs) GetnodbyValue(value int) *Node {
-	for _, node := range g.Nodes {
-		if node.Value == value {
+func (g *Graphs) GetnodbyValue(value string) *Vertex {
+	for _, node := range g.Verteces {
+		if node.Name == value {
 			return node
 		}
 	}

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	bfs "lem-in/BFS"
@@ -37,15 +36,11 @@ func Getdata(filename string) ([]string, error) {
 	return result, nil
 }
 
-func GetNodes(arr []string) ([]int, error) {
-	Nodes := []int{}
+func GetNodes(arr []string) ([]string, error) {
+	Nodes := []string{}
 	for _, v := range arr {
 		if Len := len(strings.Split(v, " ")); Len == 3 {
-			intnode, err := strconv.Atoi(strings.Split(v, "")[0])
-			if err != nil {
-				continue
-			}
-			Nodes = append(Nodes, intnode)
+			Nodes = append(Nodes, strings.Split(v, "")[0])
 		}
 	}
 	return Nodes, nil
@@ -64,6 +59,9 @@ func ProcessInput(filename string, g *bfs.Graphs) {
 	}
 	Rooms := g.ParsetoNode(Nodes)
 	g.GetEdges(input, Rooms)
-	fmt.Println(Rooms[0].Edges)
+	//	fmt.Println(g->adjacentVerteces)
+	//
+	// fmt.Println(g)
+	//
 	g.PrintGraph()
 }

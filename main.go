@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	bfs "lem-in/BFS"
@@ -13,6 +14,7 @@ func main() {
 	// Create a new graph
 	g := &bfs.Graphs{}
 	parse_file.ProcessInput(os.Args[1], g)
+	fmt.Println(g.Verteces[0].Name)
 	// Add nodes (rooms)
 	// node0 := g.addNode(0)
 	// node1 := g.addNode(1)
