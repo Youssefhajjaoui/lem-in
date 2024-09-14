@@ -45,3 +45,51 @@ func (g *Graph)Traverse(){
 		}
 	}
 }
+
+
+func (g *Graph)Search(name string)*Vertex{
+	// make a que
+	q := Q.New()
+	q.Enqueue(g.Start)
+	// make a map 
+	visited := make(map[*Vertex]bool)
+	visited[g.Start] = true
+	if g.Start.Name == name {
+		return g.Start
+	}
+	// start from the q and gethem all
+	// e is a node
+	for  !q.IsEmpty()  {
+		dequeuedItem := q.Dequeue()
+		e , ok := dequeuedItem.Item.(*Vertex)
+		if !ok{
+			continue
+		}
+		for _, l := range e.adjacentVerteces {
+			if l.Name == name {
+				return l
+			}
+			if visited[l] {
+				continue
+			}
+			visited[l] = true
+			q.Enqueue(l)
+			fmt.Println(l.Name)
+		}
+	}
+	return nil
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

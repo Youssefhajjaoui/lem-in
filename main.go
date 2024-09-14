@@ -1,6 +1,7 @@
 package main 
 
 import bfs "lem-in/BFS"
+import "fmt"
 
 func main(){
 	graph := bfs.NewGraph()
@@ -44,4 +45,9 @@ func main(){
 	graph.Add(v1)
 	
 	graph.Traverse()
+	
+	found := graph.Search("v10")
+	NotFound := graph.Search("v100")
+	fmt.Println("found: ", found)
+	fmt.Println("no found: ", NotFound)
 }
