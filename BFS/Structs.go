@@ -49,7 +49,7 @@ func (g *Graphs) ParsetoNode(values []int) []*Node {
 
 func (g *Graphs) GetEdges(arr []string, Nodes []*Node) error {
 	for _, v := range arr {
-		if Len := len(strings.Split(v, " ")); Len == 2 {
+		if Len := len(strings.Split(v, "-")); Len == 2 {
 			node1, err := strconv.Atoi(strings.Split(v, "-")[0])
 			if err != nil {
 				continue
