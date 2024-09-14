@@ -32,6 +32,7 @@ func main(){
 	v4.Add_adjacent_vertex(v7)
 
 	v5.Add_adjacent_vertex(v9)
+	v5.Add_adjacent_vertex(v10)
 	v5.Add_adjacent_vertex(v6)
 
 	v7.Add_adjacent_vertex(v8)
@@ -39,15 +40,25 @@ func main(){
 
 	v6.Add_adjacent_vertex(v11)
 	v6.Add_adjacent_vertex(v10)
+	v11.Add_adjacent_vertex(v10)
+
 
 	graph.Start = v1
 
 	graph.Add(v1)
 	
-	graph.Traverse()
 	
 	found := graph.Search("v10")
 	NotFound := graph.Search("v100")
 	fmt.Println("found: ", found)
 	fmt.Println("no found: ", NotFound)
+	////////////////////////////////////////
+	fmt.Println("/////////////")
+	fmt.Println("#########################")
+	fmt.Println("these are all ways")
+	//fmt.Println(graph.FindAllWays("v10"))
+	//ss := graph.FirstSet("v10", map[string]bool{"v2": true, "v3" : true, "v4" : true})
+	//s := bfs.Domino(ss, "v10")
+	d := graph.FindAllWays("v10")
+	fmt.Println(d)
 }

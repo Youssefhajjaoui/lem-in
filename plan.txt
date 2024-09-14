@@ -1,0 +1,25 @@
+###############################################################
+1. BFS for Path Finding:
+
+    Goal: Find multiple shortest paths from the start to the end room.
+    Steps:
+        Start with the initial room (source).
+        Explore the graph level by level (BFS).
+        Keep track of all paths that lead to the end room (destination) while ensuring they're shortest paths (minimum number of tunnels).
+        Store these paths for use in the maximum flow step.
+###############################################################
+
+
+
+
+###############################################################
+2. Edmonds-Karp Algorithm (for Maximum Flow):
+
+    Goal: Find the maximum number of disjoint paths from start to end by repeatedly finding augmenting paths.
+    Steps:
+        Treat the graph as a flow network where each room-to-room connection (tunnel) has a capacity of 1 (ants can pass one at a time).
+        Use BFS to find an augmenting path from start to end.
+        Increase the flow along this path by sending ants through it.
+        Repeat BFS to find another path, adjusting the capacities of tunnels after each iteration.
+        Continue until no more augmenting paths can be found.
+###############################################################
