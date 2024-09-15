@@ -2,6 +2,7 @@ package bfs
 
 import (
 	"errors"
+	"fmt"
 )
 
 type Vertex struct {
@@ -15,7 +16,10 @@ type Vertex struct {
 
 // still don't know how to make this works
 func NewVertex(name string) *Vertex {
-	return &Vertex{Name: name}
+	return &Vertex{
+		Name:             name,
+		adjacentVerteces: []*Vertex{},
+	}
 }
 
 // this is to relate verticies
@@ -76,4 +80,16 @@ func (g *Graph) CreatEdge(edges [][]string) {
 	for _, cols := range edges {
 		g.Add_adjacent_vertex(cols[0], cols[1])
 	}
+}
+
+func (graph *Graph) PrintGraph() {
+	for _, n := range graph.Verteces {
+		fmt.Printf("Room %s: ", n.Name)
+		for _, neighbor := range n.adjacentVerteces {
+			fmt.Printf("%s <-> ", neighbor.Name)
+		}
+		fmt.Println("nil")
+	}
+	fmt.Printf("START: %s\n", graph.Start.Name)
+	fmt.Printf("END: %s\n", graph.End.Name)
 }

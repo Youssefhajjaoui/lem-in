@@ -69,7 +69,7 @@ func GetEdges(arr []string) ([][]string, error) {
 	for _, v := range arr {
 		if Len := len(strings.Split(v, "-")); Len == 2 {
 			rows = append(rows, strings.Split(v, "-")[0])
-			rows = append(rows, strings.Split(v, "-")[0])
+			rows = append(rows, strings.Split(v, "-")[1])
 			cols = append(cols, rows)
 			rows = []string{}
 		}
