@@ -4,8 +4,9 @@ import bfs "lem-in/BFS"
 import "fmt"
 
 func main(){
+	// declare a new graph
 	graph := bfs.NewGraph()
-	
+	// declare rooms
 	v1 := bfs.NewVertex("v1")
 	v2 := bfs.NewVertex("v2")
 	v3 := bfs.NewVertex("v3")
@@ -25,7 +26,7 @@ func main(){
 	v60 := bfs.NewVertex("v60")
 	v70 := bfs.NewVertex("v70")
 	v80 := bfs.NewVertex("v80")
-
+	// link the rooms
 	v1.Add_adjacent_vertex(v2)
 	v1.Add_adjacent_vertex(v3)
 	v1.Add_adjacent_vertex(v4)
@@ -59,18 +60,21 @@ func main(){
 	v60.Add_adjacent_vertex(v70)
 	v70.Add_adjacent_vertex(v80)
 	v80.Add_adjacent_vertex(v10)
-
+	// declare the starting room
 	graph.Start = v1
 
+	// traverse the graph
+	graph.Traverse()
+
+	// add one room to the graph
 	graph.Add(v1)
 	
-	
+	// search for a room by name	
 	found := graph.Search("v10")
 	NotFound := graph.Search("v100")
 	fmt.Println("found the element with name v10: ", found)
 	fmt.Println("no elemen with name v100 found: ", NotFound)
 	////////////////////////////////////////
-	fmt.Println("/////////////")
 	fmt.Println("#########################")
 	fmt.Println("this is the shortest way")
 	//fmt.Println(graph.FindAllWays("v10"))
