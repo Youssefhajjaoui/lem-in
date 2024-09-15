@@ -74,8 +74,10 @@ func main(){
 	fmt.Println("#########################")
 	fmt.Println("these are all ways")
 	//fmt.Println(graph.FindAllWays("v10"))
-	//ss := graph.FirstSet("v10", map[string]bool{"v2": true, "v3" : true, "v4" : true})
+	ss := graph.FirstSet("v10", map[string]bool{})
 	//s := bfs.Domino(ss, "v10")
+	fmt.Println(ss)
+	fmt.Println("#########################")
 	d := graph.FindAllWays("v10")
 	fmt.Println(d)
 }
