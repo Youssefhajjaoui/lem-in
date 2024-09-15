@@ -3,11 +3,11 @@ package parse_file
 import (
 	"bufio"
 	"errors"
-//	"fmt"
+
+	//	"fmt"
 	"os"
 	"strings"
-
-	//bfs "lem-in/BFS"
+	// bfs "lem-in/BFS"
 )
 
 // this file contains function to:
@@ -46,22 +46,78 @@ func GetNodes(arr []string) ([]string, error) {
 	return Nodes, nil
 }
 
-/*func ProcessInput(filename string, g *bfs.Graphs) {
-	input, err := Getdata(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
+// func ParsetoNode(arr []string) ([]*Vertex, error) {
+// 	values, err := GetNodes(arr)
+// 	if err != nil {
+// 		return nil, errors.New("NO Vertexes")
+// 	}
+// 	Nodes := []*Vertex{}
+// 	for i := 0; i < len(values); i++ {
+// 		g.Verteces = append(g.Verteces, &Vertex{
+// 			Name: values[i],
+// 		})
+// 	}
+// 	if len(Nodes) == 0 {
+// 		return nil, errors.New("error in the Nodes details")
+// 	}
+// 	return Nodes, nil
+// }
+
+func GetEdges(arr []string) ([][]string, error) {
+	cols := [][]string{}
+	rows := []string{}
+	for _, v := range arr {
+		if Len := len(strings.Split(v, "-")); Len == 2 {
+			rows = append(rows, strings.Split(v, "-")[0])
+			rows = append(rows, strings.Split(v, "-")[0])
+			cols = append(cols, rows)
+			rows = []string{}
+		}
 	}
-	Nodes, err := GetNodes(input)
-	if err != nil {
-		fmt.Println(err)
-		return
+	if len(cols) == 0 {
+		return nil, errors.New("maybe no relation here")
 	}
-	Rooms := g.ParsetoNode(Nodes)
-	g.GetEdges(input, Rooms)
-	//	fmt.Println(g->adjacentVerteces)
-	//
-	// fmt.Println(g)
-	//
-	g.PrintGraph()
-}*/
+	return cols, nil
+}
+
+func GetStart(arr []string) string {
+	for i, v := range arr {
+		if v == "##start" {
+			return strings.Split(arr[i+1], "")[0]
+		}
+	}
+	return ""
+}
+
+func GetEnd(arr []string) string {
+	for i, v := range arr {
+		if v == "##end" {
+			return strings.Split(arr[i+1], "")[0]
+		}
+	}
+	return ""
+}
+
+// func ProcessInput(filename string) (*Graphs, error) {
+// 	g := &Graphs{}
+// 	input, err := Getdata(filename)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	Nodes, err := GetNodes(input)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	Rooms, err := g.ParsetoNode(Nodes)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	if err := g.GetEdges(input, Rooms); err != nil {
+// 		return nil, err
+// 	}
+// 	//	fmt.Println(g->adjacentVerteces)
+// 	//
+// 	// fmt.Println(g)
+// 	//
+// 	return g, nil
+// }
