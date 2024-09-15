@@ -67,17 +67,18 @@ func main(){
 	
 	found := graph.Search("v10")
 	NotFound := graph.Search("v100")
-	fmt.Println("found: ", found)
-	fmt.Println("no found: ", NotFound)
+	fmt.Println("found the element with name v10: ", found)
+	fmt.Println("no elemen with name v100 found: ", NotFound)
 	////////////////////////////////////////
 	fmt.Println("/////////////")
 	fmt.Println("#########################")
-	fmt.Println("these are all ways")
+	fmt.Println("this is the shortest way")
 	//fmt.Println(graph.FindAllWays("v10"))
 	ss := graph.FirstSet("v10", map[string]bool{})
-	//s := bfs.Domino(ss, "v10")
 	fmt.Println(ss)
+	//s := bfs.Domino(ss, "v10")
 	fmt.Println("#########################")
+	fmt.Println("these are all ways")
 	d := graph.FindAllWays("v10")
 	fmt.Println(d)
 }

@@ -41,9 +41,10 @@ func (g *Graph)Traverse(){
 			}
 			visited[l] = true
 			q.Enqueue(l)
-			fmt.Println(l.Name)
+			fmt.Print(l.Name + "->")
 		}
 	}
+	fmt.Println()
 }
 
 // this is searching an intem and returning pointer to the vertex
@@ -74,7 +75,6 @@ func (g *Graph)Search(name string)*Vertex{
 			}
 			visited[l] = true
 			q.Enqueue(l)
-			fmt.Println(l.Name)
 		}
 	}
 	return nil
@@ -115,7 +115,6 @@ func (g *Graph)ValidPaths(end string)[][2]string{
 			q.Enqueue(l)
 			//from[l.Name] = e.Name
 			from = append(from , [2]string{l.Name, e.Name})
-			fmt.Println(l.Name)
 		}
 	}
 	return from
@@ -127,7 +126,6 @@ func (g *Graph)ValidPaths(end string)[][2]string{
 /////////////////////////////////////////////////////////
 // this is bfs that allows me to find one path
 func (g *Graph)FirstSet(name string, pas map[string]bool)[]string{
-	//fmt.Println(visited)
 
 	// make a que
 	visited := copyMap(pas)
@@ -216,10 +214,7 @@ func (g *Graph)FindAllWays(name string)[][]string{
 	block := make(map[string]bool)
 	var stop = true 	
 	for stop {
-		fmt.Println(block)
 		ss := g.FirstSet(name ,block)
-		fmt.Println("debug")
-		fmt.Println(ss)
 		if len(ss) == 0 {
 			stop = false
 			continue
