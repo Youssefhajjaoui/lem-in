@@ -208,8 +208,9 @@ func assemble(parts [][2]string, exit string)[]string{
 }
 
 
-func (g *Graph)FindAllWays(name string)[][]string{
+func (g *Graph)FindAllWays()[][]string{
 	// find the first set 
+	name := g.End.Name
 	var paths [][]string
 	block := make(map[string]bool)
 	var stop = true 	
