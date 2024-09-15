@@ -3,11 +3,11 @@ package parse_file
 import (
 	"bufio"
 	"errors"
-	"fmt"
+//	"fmt"
 	"os"
 	"strings"
 
-	bfs "lem-in/BFS"
+	//bfs "lem-in/BFS"
 )
 
 // this file contains function to:
@@ -46,7 +46,7 @@ func GetNodes(arr []string) ([]string, error) {
 	return Nodes, nil
 }
 
-func ProcessInput(filename string, g *bfs.Graphs) {
+/*func ProcessInput(filename string, g *bfs.Graphs) {
 	input, err := Getdata(filename)
 	if err != nil {
 		fmt.Println(err)
@@ -64,4 +64,4 @@ func ProcessInput(filename string, g *bfs.Graphs) {
 	// fmt.Println(g)
 	//
 	g.PrintGraph()
-}
+}*/
