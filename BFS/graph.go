@@ -19,7 +19,7 @@ func (g *Graph)Add(v *Vertex){
 	g.Verteces = append(g.Verteces, v)
 }
 
-
+// this traverse all the graph
 func (g *Graph)Traverse(){
 	// make a que
 	q := Q.New()
@@ -46,7 +46,7 @@ func (g *Graph)Traverse(){
 	}
 }
 
-
+// this is searching an intem and returning pointer to the vertex
 func (g *Graph)Search(name string)*Vertex{
 	// make a que
 	q := Q.New()
@@ -84,7 +84,9 @@ func (g *Graph)Search(name string)*Vertex{
 // get all the rooms pointing to the end 
 // if a room from those room points somewhere else 
 // remove that link ? 
-
+// this is just a normal search, you can  use it to undestand
+// the next method that is build on this one
+// actually i don't even rememver what i did by this function
 func (g *Graph)ValidPaths(end string)[][2]string{
 	// make a que
 	q := Q.New()
@@ -123,8 +125,12 @@ func (g *Graph)ValidPaths(end string)[][2]string{
 
 
 /////////////////////////////////////////////////////////
-func (g *Graph)FirstSet(name string, visited map[string]bool)[][2]string{
+// this is bfs that allows me to find one path
+func (g *Graph)FirstSet(name string, pas map[string]bool)[]string{
+	//fmt.Println(visited)
+
 	// make a que
+	visited := copyMap(pas)
 	q := Q.New()
 	q.Enqueue(g.Start)
 	// make a map 
@@ -132,7 +138,7 @@ func (g *Graph)FirstSet(name string, visited map[string]bool)[][2]string{
 	visited[g.Start.Name] = true
 	var from [][2]string
 	if g.Start.Name == name {
-		return from
+		return assemble(from,name)
 	}
 	// start from the q and gethem all
 	// e is a node
@@ -159,6 +165,9 @@ func (g *Graph)FirstSet(name string, visited map[string]bool)[][2]string{
 			}
 			save = append(save, l)
 			from = append(from, [2]string{e.Name, l.Name})
+			if found {
+				return assemble(from, name)
+			}
 		}
 		if !found {
 			for _, el := range save {
@@ -166,29 +175,17 @@ func (g *Graph)FirstSet(name string, visited map[string]bool)[][2]string{
 			}
 		}
 	}
-	// instead of returning assemple and return 
-	return from
-	////////////////////////////////////////////
+	return assemble(from, name)
 }
-
-func Domino(parts [][2]string, exit string)[][]string{
-	// start from the end 
-	// look for the exit
-	// check the first element of the last 
-	// look for it's pair 
-	// add to the path
-	// remove the element
-	var paths [][]string
-	for i := len(parts) -1 ; i >= 0 ; i -- {
-		if parts[i][1] == exit {
-			paths = append(paths, assemble(parts[:i+1],exit))
-		}
-	}	
-
-
-	return paths
+// this is used so i don't pass by refrence 
+func copyMap(original map[string]bool) map[string]bool{
+    newMap := make(map[string]bool)
+    for key, value := range original {
+        newMap[key] = value
+    }
+    return newMap
 }
-
+// this is used to track the path i used to the end
 func assemble(parts [][2]string, exit string)[]string{
 	var find  string
 	path := []string{}
@@ -199,13 +196,11 @@ func assemble(parts [][2]string, exit string)[]string{
 			path = append(path, parts[i][0])
 			done = true
 			find = parts[i][0]
-			//parts = parts[:len(parts)-1]
 		}
 		if done {
 			if parts[i][1] == find {
 				path = append(path, parts[i][0])
 				find = parts[i][0]
-			//	parts = append(parts[:i] , parts[i+1:]...)
 			}
 		}
 
@@ -219,22 +214,21 @@ func (g *Graph)FindAllWays(name string)[][]string{
 	// find the first set 
 	var paths [][]string
 	block := make(map[string]bool)
-	//block["v2"] = true 
-	//block["v3"] = true 
-	//block["v4"] = true
 	var stop = true 	
 	for stop {
-		ss := Domino(g.FirstSet(name ,block), name) 
-		if len(ss) != 0 {
+		fmt.Println(block)
+		ss := g.FirstSet(name ,block)
+		fmt.Println("debug")
+		fmt.Println(ss)
+		if len(ss) == 0 {
 			stop = false
+			continue
 		}
-		paths = append(paths , ss... )
+		paths = append(paths , ss )
 		for _, s := range ss {
-			for _, t := range s {
-				if t != name {
-					block[t] = true
+				if s != name {
+					block[s] = true
 				}
-			}
 		}
 	}
 	return paths
