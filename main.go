@@ -3,6 +3,7 @@ package main
 import (
 	bfs "lem-in/BFS"
 	fl "lem-in/parse_file"
+	devide "lem-in/devide_ants"
 	"fmt"
 )
 
@@ -22,5 +23,6 @@ func main() {
 	graph.PrintGraph()
 	all := graph.FindAllWays()
 	fmt.Println(all)
+	devide.Devide(all , 3)
 }
 
