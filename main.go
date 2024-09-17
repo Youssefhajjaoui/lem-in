@@ -14,10 +14,11 @@ func main() {
 	data, _ := fl.Getdata("data.txt")
 	// creat vertexes
 	Vertexes, _ := fl.GetNodes(data)
-	graph.CreatNodes(Vertexes)
-	// creat edges relations betwen vertexes
+	// snap is a map name *vertex.
+	snap := graph.CreatNodes(Vertexes)
 	Edges, _ := fl.GetEdges(data)
-	graph.CreatEdge(Edges)
+	// creat edges relations betwen vertexes
+	bfs.CreatEdge(Edges, snap)
 	// creat start and end
 	graph.SetStartEnd(fl.GetStart(data), fl.GetEnd(data))
 	graph.PrintGraph()
