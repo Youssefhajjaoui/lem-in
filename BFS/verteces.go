@@ -6,46 +6,49 @@ import (
 )
 
 type Vertex struct {
-	// name of the room
 	Name string
-	// cordonate of the room
-	// crd [2]int
-	// liks from the current room to other rooms
 	adjacentVerteces []*Vertex
 }
 
-// still don't know how to make this works
 func NewVertex(name string) *Vertex {
 	return &Vertex{
 		Name:             name,
 		adjacentVerteces: []*Vertex{},
 	}
 }
-
+/////////////////////////////////////////////////////////////////////////////////
 // this is to relate verticies
-func (g *Graph) Add_adjacent_vertex(node1 string, node2 string) error {
-	vertex1, err := g.GetnodbyValue(node1)
-	vertex2, err := g.GetnodbyValue(node2)
+func (v *Vertex)Add_adjacent_vertex(vertex *Vertex)error{
+	does , err := v.include(vertex)
 	if err != nil {
-		return errors.New("add adjacent for no existing vertex !! ")
+		return err 
 	}
-	if !vertex1.include(vertex2) {
-		vertex1.adjacentVerteces = append(vertex1.adjacentVerteces, vertex2)
+	if !does {
+		v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	}
-	if !vertex2.include(vertex1) {
-		vertex2.adjacentVerteces = append(vertex2.adjacentVerteces, vertex1)
-	}
-	return nil
+		vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
+		return nil
 }
+/////////////////////////////////////////////////////////////////////////////////
 
 // check if if the v is already related to vertex
-func (v *Vertex) include(vertex *Vertex) bool {
+func (v *Vertex) include(vertex *Vertex) (bool, error) {
+	var err error
+	if v == nil || vertex == nil {
+		if v == nil {
+			err = errors.New("source pointer is nil")
+		}
+		if vertex == nil {
+			err = errors.New("distination pointer is nil")
+		}
+		return false , err
+	}
 	for _, e := range v.adjacentVerteces {
 		if e == vertex {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }
 
 func (g *Graph) SetStartEnd(start string, end string) error {
@@ -68,17 +71,21 @@ func (g *Graph) GetnodbyValue(value string) (*Vertex, error) {
 
 	return nil, errors.New("no vertex with this name")
 }
-
-func (g *Graph) CreatNodes(Nodes []string) {
+// the name of a vertex can not be repeated
+func (g *Graph) CreatNodes(Nodes []string)map[string]*Vertex {
+	var snap = make(map[string]*Vertex)
 	for _, Node := range Nodes {
 		vertex := NewVertex(Node)
+		snap[Node] = vertex
 		g.Verteces = append(g.Verteces, vertex)
 	}
+	return snap
 }
 
-func (g *Graph) CreatEdge(edges [][]string) {
+func CreatEdge(edges [][]string,snap  map[string]*Vertex) {
 	for _, cols := range edges {
-		g.Add_adjacent_vertex(cols[0], cols[1])
+		// name name 
+		snap[cols[0]].Add_adjacent_vertex(snap[cols[1]])
 	}
 }
 
