@@ -1,10 +1,11 @@
 package main
 
 import (
-	bfs "lem-in/BFS"
-	fl "lem-in/parse_file"
-	devide "lem-in/devide_ants"
 	"fmt"
+
+	bfs "lem-in/BFS"
+	devide "lem-in/devide_ants"
+	fl "lem-in/parse_file"
 )
 
 func main() {
@@ -22,12 +23,11 @@ func main() {
 	// creat start and end
 	graph.SetStartEnd(fl.GetStart(data), fl.GetEnd(data))
 	graph.PrintGraph()
+	graph.Traverse()
 	all := graph.FindAllWays()
 	fmt.Println(all)
-	mat := devide.Devide(all , 3)
+	mat := devide.Devide(all, 10)
 	//////////////////////
 	fmt.Println("/////////////////////////")
 	devide.Print(mat)
 }
- 
-

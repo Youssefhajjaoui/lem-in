@@ -1,6 +1,8 @@
 package devide 
 
 import "fmt"
+import "errors"
+//import "os"
 
 type Path struct {
 	Rooms []string
@@ -26,17 +28,21 @@ func NewPaths()*Paths{
 func (p *Paths)Append(path *Path){
 	*p = append(*p , path)
 }
-func (p *Paths)Shortest()(*Path, bool){
-	signle := false
+func (p *Paths)Shortest()(*Path, error){
+	if p == nil || len(*p) < 1  {
+		if p == nil {
+			return nil , errors.New("nil pointer, has no path")
+		}
+		return nil , errors.New("empty path")
+	}
 	// this has to be the first 
 	var shortest = (*p)[0]
 	for _, path := range *p{
 		if path.Passenger <= shortest.Passenger {
-			signle = true
 			shortest = path
 		}		
 	}
-	return shortest, signle
+	return shortest, nil
 }
 func Devide( ways [][]string, ants int)[][]string{
 	// make new paths
@@ -54,7 +60,12 @@ func Devide( ways [][]string, ants int)[][]string{
 	
 	show := [][]string{}
 	for i := 1 ; i <= ants ; i ++ {
-		short , _ := paths.Shortest()
+		short , err := paths.Shortest()
+		if err != nil {
+			fmt.Println(err)
+			continue
+			//os.Exit(1)
+		}
 		short.Pass()
 		took := antpath(i, short.Rooms)
 		show = append(show , took)	
