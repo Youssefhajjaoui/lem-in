@@ -2,16 +2,6 @@ package devide
 
 import "fmt"
 
-/*L1-3 L2-2
-L1-4 L2-5 L3-3
-L1-0 L2-6 L3-4
-L2-0 L3-0*/
-//x, z, r represents the ants numbers (going from 1 to number_of_ants) and y, w, o represents the rooms names.
-
-
-
-//[[0 4 3 1] [0 6 5 2 1]]
-////////////////////////////////////////////////////////////
 type Path struct {
 	Rooms []string
 	Passenger int
@@ -48,12 +38,6 @@ func (p *Paths)Shortest()(*Path, bool){
 	}
 	return shortest, signle
 }
-//////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////
-
-
 func Devide( ways [][]string, ants int)[][]string{
 	// make new paths
 	paths := NewPaths()
@@ -98,7 +82,6 @@ func Retate(matrix [][]string)[][]string{
 		line := []string{}
 		for i := 0 ; i < len(matrix)  ; i ++ {
 			branch := matrix[i]
-			//fmt.Println(branch)
 			if len(branch) > y {
 				stop = true
 				if !Check(line , branch[y]){
@@ -114,18 +97,35 @@ func Retate(matrix [][]string)[][]string{
 	return result
 }
 
+// to not use the same room at the same time
+func Check(words []string, word string) bool {
+	// Ensure the input word is not empty
+	if len(word) == 0 {
+		return false
+	}
 
-func Check(line []string, s string)bool{
-	r := s[len(s)-1] 
-	for i := 0 ; i < len(line) -1  ; i ++ {
-		b := line[i][len(line[i])-1] 
-		if b == r {
+	// Get the last character of the word
+	lastChar := string(word[len(word)-1])
+
+	// Compare with the last characters of words in the slice
+	for _, w := range words {
+		// Ensure the word in the slice is not empty
+		if len(w) == 0 {
+			continue
+		}
+
+		// Get the last character of the word in the slice
+		lastCharInSlice := string(w[len(w)-1])
+
+		// Compare the last characters
+		if lastChar == lastCharInSlice {
 			return true
 		}
 	}
+
 	return false
 }
-
+// desplay the result to on the terminal
 func Print(mat [][]string){
 	for _, line := range mat {
 		if len(line) == 0 {
