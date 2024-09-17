@@ -36,15 +36,17 @@ func NewPaths()*Paths{
 func (p *Paths)Append(path *Path){
 	*p = append(*p , path)
 }
-func (p *Paths)Shortest()*Path{
+func (p *Paths)Shortest()(*Path, bool){
+	signle := false
 	// this has to be the first 
 	var shortest = (*p)[0]
 	for _, path := range *p{
 		if path.Passenger <= shortest.Passenger {
+			signle = true
 			shortest = path
 		}		
 	}
-	return shortest
+	return shortest, signle
 }
 //////////////////////////////////////////////////////////
 
@@ -52,7 +54,7 @@ func (p *Paths)Shortest()*Path{
 /////////////////////////////////////////////////////////
 
 
-func Devide( ways [][]string, ants int)/*map[string]int*/{
+func Devide( ways [][]string, ants int)[][]string{
 	// make new paths
 	paths := NewPaths()
 	for _ , p := range ways{
@@ -66,37 +68,77 @@ func Devide( ways [][]string, ants int)/*map[string]int*/{
 	}
 
 	
+	show := [][]string{}
 	for i := 1 ; i <= ants ; i ++ {
-		short := paths.Shortest()
+		short , _ := paths.Shortest()
 		short.Pass()
-		antpath(i, short.Rooms)
+		took := antpath(i, short.Rooms)
+		show = append(show , took)	
 	}
-
-
-
-
-
-
-/*	shortest := len(paths[0])
-	// choos the path for the ant
-
-	// send the ant
-	ant := 1
-	take := paths[0]
-	for _, path := range paths {
-		if len(path) < shortest {
-			take = path
-		}
-	}
-	shortest ++*/
+	mat := Retate(show)
+	return mat
 }
 
 
-func antpath(ant int, path []string){
+func antpath(ant int, path []string)[]string{
+	took := []string{}
 	for i:= len(path) - 2 ; i >= 0 ; i -- {
 		room := path[i]
-		fmt.Printf("L%d-%s", ant , room )
+		took = append(took, fmt.Sprintf("L%d-%s", ant, room))
+
+	}
+	return took
+}
+func Retate(matrix [][]string)[][]string{
+	result := [][]string{}
+	stop := true
+	y := 0 
+	for stop {
+		stop = false
+		line := []string{}
+		for i := 0 ; i < len(matrix)  ; i ++ {
+			branch := matrix[i]
+			//fmt.Println(branch)
+			if len(branch) > y {
+				stop = true
+				if !Check(line , branch[y]){
+					line= append(line, branch[y])
+				}else{
+					matrix[i] = append([]string{""} , branch...)
+				}
+			}
+		}
+		result = append(result , line)
+		y ++
+	}
+	return result
+}
+
+
+func Check(line []string, s string)bool{
+	r := s[len(s)-1] 
+	for i := 0 ; i < len(line) -1  ; i ++ {
+		b := line[i][len(line[i])-1] 
+		if b == r {
+			return true
+		}
+	}
+	return false
+}
+
+func Print(mat [][]string){
+	for _, line := range mat {
+		if len(line) == 0 {
+			continue
+		}
+		for i , word := range line {
+			if word != "" {
+				fmt.Print(word)
+				if i != len(line) -1 {
+					fmt.Print(" ")
+				}
+			}
+		}
 		fmt.Println()
 	}
 }
-

@@ -23,6 +23,10 @@ func main() {
 	graph.PrintGraph()
 	all := graph.FindAllWays()
 	fmt.Println(all)
-	devide.Devide(all , 3)
+	mat := devide.Devide(all , 3)
+	//////////////////////
+	fmt.Println("/////////////////////////")
+	devide.Print(mat)
 }
+ 
 
