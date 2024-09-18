@@ -38,7 +38,11 @@ func main() {
 	// creat start and end
 
 	graph.Traverse()
-	all := graph.FindAllWays()
+	all, err := graph.FindAllWays()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	mat, err := devide.Devide(all, nest.Ants)
 	if err != nil {

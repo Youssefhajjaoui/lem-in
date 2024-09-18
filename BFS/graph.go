@@ -2,6 +2,7 @@ package bfs
 
 import (
 	"fmt"
+	"errors"
 	Q "lem-in/queue"
 )
 
@@ -59,77 +60,7 @@ func (g *Graph) Traverse() {
 	fmt.Println("end traversing the graph")
 }
 
-// this is searching an intem and returning pointer to the vertex
-func (g *Graph) Search(name string) *Vertex {
-	// make a que
-	q := Q.New()
-	q.Enqueue(g.Start)
-	// make a map
-	visited := make(map[*Vertex]bool)
-	visited[g.Start] = true
-	if g.Start.Name == name {
-		return g.Start
-	}
-	// start from the q and gethem all
-	// e is a node
-	for !q.IsEmpty() {
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-		if !ok {
-			continue
-		}
-		for _, l := range e.adjacentVerteces {
-			if l.Name == name {
-				return l
-			}
-			if visited[l] {
-				continue
-			}
-			visited[l] = true
-			q.Enqueue(l)
-		}
-	}
-	return nil
-}
-
-func (g *Graph) ValidPaths(end string) [][2]string {
-	// make a que
-	q := Q.New()
-	q.Enqueue(g.Start)
-	// make a map
-	visited := make(map[*Vertex]bool)
-	visited[g.Start] = true
-	from := [][2]string{}
-	//from[g.Start.Name] = g.Start.Name
-	from = append(from, [2]string{g.Start.Name, g.Start.Name})
-	// start from the q and gethem all
-	// e is a node
-	for !q.IsEmpty() {
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-		if !ok {
-			continue
-		}
-		for _, l := range e.adjacentVerteces {
-			if visited[l] {
-				continue
-			}
-			if l.Name != end {
-				visited[l] = true
-			}
-			q.Enqueue(l)
-			//from[l.Name] = e.Name
-			from = append(from, [2]string{l.Name, e.Name})
-		}
-	}
-	return from
-}
-
-// ///////////////////////////////////////////////////////
-// this is bfs that allows me to find one path
-func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
-
-
+func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 
 	// make a que
 	visited := copyMap(pas)
@@ -141,8 +72,8 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 
 	visited[g.Start.Name] = true
 	var from [][2]string
-	if g.Start.Name == name {
-		return assemble(from, name)
+	if g.Start.Name == g.End.Name{
+		return nil , errors.New("the starting and ending rooms are the same")
 	}
 
 
@@ -156,7 +87,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 			continue
 		}
 		///////////////////////////////////////
-		for _, l := range e.adjacentVerteces {
+		for i , l := range e.adjacentVerteces {
 			if visited[l.Name] {
 				continue
 			}
@@ -164,11 +95,16 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 				visited[l.Name] = true
 			} else {
 				found = true
+				// break the bind
+				if e == g.Start{
+					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
+
+				}
 			}
 			save = append(save, l)
 			from = append(from, [2]string{e.Name, l.Name})
 			if found {
-				return assemble(from, name)
+				return assemble(from, name), nil
 			}
 		}
 		if !found {
@@ -177,7 +113,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 			}
 		}
 	}
-	return assemble(from, name)
+	return assemble(from, name), nil
 }
 
 // this is used so i don't pass by refrence
@@ -212,14 +148,17 @@ func assemble(parts [][2]string, exit string) []string {
 	return path
 }
 
-func (g *Graph) FindAllWays() [][]string {
+func (g *Graph) FindAllWays() ([][]string, error) {
 	// find the first set
 	name := g.End.Name
 	var paths [][]string
 	block := make(map[string]bool)
 	var stop = true
 	for stop {
-		ss := g.FirstSet(name, block)
+		ss, err  := g.FirstSet(name, block)
+		if err != nil {
+			return nil , err
+		}
 		if len(ss) == 0 {
 			stop = false
 			continue
@@ -231,5 +170,5 @@ func (g *Graph) FindAllWays() [][]string {
 			}
 		}
 	}
-	return paths
+	return paths, nil
 }
