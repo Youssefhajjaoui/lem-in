@@ -59,28 +59,30 @@ func Parse(result []string) (Nest, error) {
 	/////////////////////
 	for i := 0; i < len(result); i++ {
 		arg := result[i]
-		////////////get the start and end
+
+		// Check for start and end indicators
 		if strings.HasPrefix(arg, "##") {
-			fmt.Println(len(result))
+			// Ensure there's a next element to check
 			if i == len(result)-1 {
-	fmt.Println(len(result))
-				fmt.Println(i)
-				fmt.Println(len(result))
 				return nest, errors.New("missing starting or ending room")
-			} else {
-				// what about case sensitive here ?
-				if arg == "##start" {
-					nest.Start = strings.Fields(result[i+1])[0]
-					//nest.Start = result[i+1]
-					result = append(result[:i], result[:i+1]...)
-				}else if arg == "##end" {
-					nest.End = strings.Fields(result[i+1])[0]
-					//nest.End= result[i+1]
-					result = append(result[:i], result[:i+1]...)
-				}
+			}
+
+			nextArg := result[i+1] // Store next argument for easier access
+			switch strings.ToLower(arg) {
+			case "##start":
+				nest.Start = strings.Fields(nextArg)[0]
+				// Remove the start indicator and its following element
+				result = append(result[:i], result[i+2:]...)
+				i-- // Adjust index after modification
+			case "##end":
+				nest.End = strings.Fields(nextArg)[0]
+				// Remove the end indicator and its following element
+				result = append(result[:i], result[i+2:]...)
+				i-- // Adjust index after modification
 			}
 			continue
 		}
+
 		/////////////////////////////////////////
 		Tor := strings.Fields(arg)
 		if len(Tor) == 3 {
