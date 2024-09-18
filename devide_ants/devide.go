@@ -90,7 +90,9 @@ func Retate(matrix [][]string) [][]string {
 			branch := matrix[i]
 			if len(branch) > y {
 				stop = true
-				if !Check(line, branch[y]) {
+				if y == len(branch)-1 {
+					line = append(line, branch[y])
+				} else if !Check(line, branch[y]) {
 					line = append(line, branch[y])
 				} else {
 					matrix[i] = append([]string{""}, branch...)
