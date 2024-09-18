@@ -37,15 +37,18 @@ func FillTheNest(filename string) ([]string, error) {
 }
 
 func Parse(result []string)(Nest, error){
-	if len(result == 0){
-		return Nest{}, errors.New("empty file")
-	}
 	var nest Nest
+	if len(result == 0){
+		return nest , errors.New("empty file")
+	}
 	nest.Ants , err := strconv.Atoi(result[0])
 	if err != nil{
-		return Nest{}
+		return nest , errors.New("the first argument of the file should be the number of ants. Not Found !"
 	}
 	for i := 1 ; i < len(result []string) ; i ++ {
+		arg := result[i]
+		arg := strings.Fields(result[i])
+		
 	}
 }
 
