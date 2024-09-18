@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 
-	//	"fmt"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -45,6 +45,7 @@ func FillTheNest(filename string) (Nest, error) {
 }
 
 func Parse(result []string) (Nest, error) {
+	fmt.Println(len(result))
 	var nest Nest
 	if len(result) == 0 {
 		return nest, errors.New("empty file")
@@ -60,16 +61,21 @@ func Parse(result []string) (Nest, error) {
 		arg := result[i]
 		////////////get the start and end
 		if strings.HasPrefix(arg, "##") {
+			fmt.Println(len(result))
 			if i == len(result)-1 {
+	fmt.Println(len(result))
+				fmt.Println(i)
+				fmt.Println(len(result))
 				return nest, errors.New("missing starting or ending room")
 			} else {
 				// what about case sensitive here ?
 				if arg == "##start" {
 					nest.Start = strings.Fields(result[i+1])[0]
+					//nest.Start = result[i+1]
 					result = append(result[:i], result[:i+1]...)
-				}
-				if arg == "##end" {
+				}else if arg == "##end" {
 					nest.End = strings.Fields(result[i+1])[0]
+					//nest.End= result[i+1]
 					result = append(result[:i], result[:i+1]...)
 				}
 			}
