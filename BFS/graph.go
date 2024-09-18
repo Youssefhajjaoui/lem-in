@@ -2,6 +2,7 @@ package bfs
 
 import (
 	"fmt"
+	"errors"
 	Q "lem-in/queue"
 )
 
@@ -92,7 +93,7 @@ func (g *Graph) Search(name string) *Vertex {
 	return nil
 }
 
-func (g *Graph) ValidPaths(end string) [][2]string {
+func (g *Graph) ValidPaths() [][2]string {
 	// make a que
 	q := Q.New()
 	q.Enqueue(g.Start)
@@ -114,11 +115,12 @@ func (g *Graph) ValidPaths(end string) [][2]string {
 			if visited[l] {
 				continue
 			}
-			if l.Name != end {
+			// only the end should not be indexed 
+			// as visited and shouldn't be added to the queue
+			if l.Name != g.End.Name{
 				visited[l] = true
+				q.Enqueue(l)
 			}
-			q.Enqueue(l)
-			//from[l.Name] = e.Name
 			from = append(from, [2]string{l.Name, e.Name})
 		}
 	}
@@ -127,7 +129,7 @@ func (g *Graph) ValidPaths(end string) [][2]string {
 
 // ///////////////////////////////////////////////////////
 // this is bfs that allows me to find one path
-func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
+func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 
 
 
@@ -141,8 +143,8 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 
 	visited[g.Start.Name] = true
 	var from [][2]string
-	if g.Start.Name == name {
-		return assemble(from, name)
+	if g.Start.Name == g.End.Name{
+		return nil , errors.New("the starting and ending rooms are the same")
 	}
 
 
@@ -168,7 +170,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 			save = append(save, l)
 			from = append(from, [2]string{e.Name, l.Name})
 			if found {
-				return assemble(from, name)
+				return assemble(from, name), nil
 			}
 		}
 		if !found {
@@ -177,7 +179,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 			}
 		}
 	}
-	return assemble(from, name)
+	return assemble(from, name), nil
 }
 
 // this is used so i don't pass by refrence
@@ -212,14 +214,17 @@ func assemble(parts [][2]string, exit string) []string {
 	return path
 }
 
-func (g *Graph) FindAllWays() [][]string {
+func (g *Graph) FindAllWays() ([][]string, error) {
 	// find the first set
 	name := g.End.Name
 	var paths [][]string
 	block := make(map[string]bool)
 	var stop = true
 	for stop {
-		ss := g.FirstSet(name, block)
+		ss, err  := g.FirstSet(name, block)
+		if err != nil {
+			return nil , err
+		}
 		if len(ss) == 0 {
 			stop = false
 			continue
@@ -231,5 +236,5 @@ func (g *Graph) FindAllWays() [][]string {
 			}
 		}
 	}
-	return paths
+	return paths, nil
 }
