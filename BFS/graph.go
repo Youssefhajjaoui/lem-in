@@ -36,6 +36,7 @@ func (g *Graph) Traverse() {
 		fmt.Println("more to go")
 		dequeuedItem := q.Dequeue()
 		e, ok := dequeuedItem.Item.(*Vertex)
+		fmt.Println("e", e)
 		if !ok {
 			fmt.Println("not okay")
 			continue

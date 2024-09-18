@@ -16,19 +16,17 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(nest)
-	graph.Start = bfs.NewVertex(nest.Start)
-	graph.End = bfs.NewVertex(nest.End)
-	fmt.Println(graph.Start)
-	fmt.Println(graph.End)
-	// creat vertexes
 
 	// snap is a map name *vertex.
 	snap := graph.NewVerteces(nest.Rooms)
-	fmt.Println("new rooms: ", snap)
+	graph.Start = snap[nest.Start]
+	graph.End = snap[nest.End]
 
 	// creat edges relations betwen vertexes
 	err = bfs.ConnectRooms(nest.Tunels, snap)
+
+	fmt.Println("again start: ", graph.Start)
+	fmt.Println("again end: ", graph.End)
 	if err != nil {
 		fmt.Println(err)
 		return
