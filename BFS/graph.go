@@ -23,6 +23,7 @@ func (g *Graph) Add(v *Vertex) {
 func (g *Graph) Traverse() {
 	fmt.Println("start traversing the graph")
 	fmt.Println("this is the start: ", g.Start.Name)
+	fmt.Println("these are the follows ", g.Start.adjacentVerteces)
 	// Initialize the queue
 	q := Q.New()
 	q.Enqueue(g.Start)
@@ -30,17 +31,21 @@ func (g *Graph) Traverse() {
 	// Create a map to track visited vertices
 	visited := make(map[*Vertex]bool)
 	visited[g.Start] = true
-
 	// Start traversing the graph
 	for !q.IsEmpty() {
+		fmt.Println("more to go")
 		dequeuedItem := q.Dequeue()
 		e, ok := dequeuedItem.Item.(*Vertex)
 		if !ok {
+			fmt.Println("not okay")
 			continue
 		}
 
 		// Process all adjacent vertices
+		fmt.Println("befor getting otheres")
+		fmt.Println(e.adjacentVerteces)
 		for _, adjVertex := range e.adjacentVerteces {
+			fmt.Println("others are here")
 			if visited[adjVertex] {
 				continue
 			}
@@ -86,13 +91,6 @@ func (g *Graph) Search(name string) *Vertex {
 	return nil
 }
 
-// start from the end,
-// get all the rooms pointing to the end
-// if a room from those room points somewhere else
-// remove that link ?
-// this is just a normal search, you can  use it to undestand
-// the next method that is build on this one
-// actually i don't even rememver what i did by this function
 func (g *Graph) ValidPaths(end string) [][2]string {
 	// make a que
 	q := Q.New()
@@ -141,10 +139,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
 	if g.Start.Name == name {
 		return assemble(from, name)
 	}
-	// start from the q and gethem all
-	// e is a node
-	// i need a data type to store the path in.
-	//var found = false
+
 	for !q.IsEmpty() {
 		found := false
 		save := []*Vertex{}

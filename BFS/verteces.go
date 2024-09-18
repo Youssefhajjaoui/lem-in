@@ -18,26 +18,38 @@ func NewVertex(name string) *Vertex {
 }
 
 // ///////////////////////////////////////////////////////////////////////////////
-// this is to relate verticies
-func (v *Vertex) Add_adjacent_vertex(vertex *Vertex) error {
-	does, err := v.include(vertex)
+// Add_adjacent_vertex adds an adjacent vertex to the current vertex.
+// It ensures that each vertex is only added once in both directions.
+func (v *Vertex) AddAdjacentVertex(vertex *Vertex) error {
+	fmt.Println(v.Name)
+	if vertex == nil {
+		return errors.New("vertex pointer is nil")
+	}
+
+	// Check if the current vertex already includes the adjacent vertex
+	alreadyConnected, err := v.include(vertex)
 	if err != nil {
 		return err
 	}
-	if !does {
+
+	if !alreadyConnected {
 		v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	}
-	vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
+
+	// Ensure the adjacent vertex points back to the current vertex
+	alreadyConnected, err = vertex.include(v)
+	if err != nil {
+		return err
+	}
+	if !alreadyConnected {
+		vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
+	}
+
 	return nil
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-
-// Check if the vertex is already related to the given vertex.
+// include checks if the vertex is already related to the given vertex.
 func (v *Vertex) include(vertex *Vertex) (bool, error) {
-	if v == nil && vertex == nil {
-		return false, errors.New("both source and destination pointers are nil")
-	}
 	if v == nil {
 		return false, errors.New("source pointer is nil")
 	}
@@ -70,7 +82,7 @@ func ConnectRooms(edges [][2]string, snap map[string]*Vertex) error {
 		// Ensure both vertices exist in the snap map
 		if vertex1, ok1 := snap[cols[0]]; ok1 {
 			if vertex2, ok2 := snap[cols[1]]; ok2 {
-				if err := vertex1.Add_adjacent_vertex(vertex2); err != nil {
+				if err := vertex1.AddAdjacentVertex(vertex2); err != nil {
 					return fmt.Errorf("%w: %s -> %s", err, cols[0], cols[1])
 				}
 			} else {
