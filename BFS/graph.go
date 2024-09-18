@@ -21,6 +21,8 @@ func (g *Graph) Add(v *Vertex) {
 
 // Traverse traverses all the vertices in the graph.
 func (g *Graph) Traverse() {
+	fmt.Println("start traversing the graph")
+	fmt.Println("this is the start: ", g.Start.Name)
 	// Initialize the queue
 	q := Q.New()
 	q.Enqueue(g.Start)

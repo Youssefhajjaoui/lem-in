@@ -33,45 +33,25 @@ func (v *Vertex) Add_adjacent_vertex(vertex *Vertex) error {
 
 /////////////////////////////////////////////////////////////////////////////////
 
-// check if if the v is already related to vertex
+// Check if the vertex is already related to the given vertex.
 func (v *Vertex) include(vertex *Vertex) (bool, error) {
-	var err error
-	if v == nil || vertex == nil {
-		if v == nil {
-			err = errors.New("source pointer is nil")
-		}
-		if vertex == nil {
-			err = errors.New("distination pointer is nil")
-		}
-		return false, err
+	if v == nil && vertex == nil {
+		return false, errors.New("both source and destination pointers are nil")
 	}
+	if v == nil {
+		return false, errors.New("source pointer is nil")
+	}
+	if vertex == nil {
+		return false, errors.New("destination pointer is nil")
+	}
+
+	// Check if the vertex is in the adjacent vertices list
 	for _, e := range v.adjacentVerteces {
 		if e == vertex {
 			return true, nil
 		}
 	}
 	return false, nil
-}
-
-func (g *Graph) SetStartEnd(start string, end string) error {
-	Start, err := g.GetnodbyValue(start)
-	End, err := g.GetnodbyValue(end)
-	if Start == nil || End == nil || err != nil {
-		return errors.New("start or End is not valid")
-	}
-	g.Start = Start
-	g.End = End
-	return nil
-}
-
-func (g *Graph) GetnodbyValue(value string) (*Vertex, error) {
-	for _, node := range g.Verteces {
-		if node.Name == value {
-			return node, nil
-		}
-	}
-
-	return nil, errors.New("no vertex with this name")
 }
 
 // the name of a vertex can not be repeated
