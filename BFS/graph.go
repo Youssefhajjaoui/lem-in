@@ -19,29 +19,33 @@ func (g *Graph) Add(v *Vertex) {
 	g.Verteces = append(g.Verteces, v)
 }
 
-// this traverse all the graph
+// Traverse traverses all the vertices in the graph.
 func (g *Graph) Traverse() {
-	// make a que
+	// Initialize the queue
 	q := Q.New()
 	q.Enqueue(g.Start)
-	// make a map
+
+	// Create a map to track visited vertices
 	visited := make(map[*Vertex]bool)
 	visited[g.Start] = true
-	// start from the q and gethem all
-	// e is a node
+
+	// Start traversing the graph
 	for !q.IsEmpty() {
 		dequeuedItem := q.Dequeue()
 		e, ok := dequeuedItem.Item.(*Vertex)
 		if !ok {
 			continue
 		}
-		for _, l := range e.adjacentVerteces {
-			if visited[l] {
+
+		// Process all adjacent vertices
+		for _, adjVertex := range e.adjacentVerteces {
+			if visited[adjVertex] {
 				continue
 			}
-			visited[l] = true
-			q.Enqueue(l)
-			fmt.Print(l.Name + "->")
+
+			visited[adjVertex] = true
+			q.Enqueue(adjVertex)
+			fmt.Print(adjVertex.Name + "->")
 		}
 	}
 	fmt.Println()

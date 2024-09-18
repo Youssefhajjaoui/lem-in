@@ -71,12 +71,31 @@ func Parse(result []string) (Nest, error) {
 			switch strings.ToLower(arg) {
 			case "##start":
 				nest.Start = strings.Fields(nextArg)[0]
+				Tor := strings.Fields(nextArg)
+				if len(Tor) == 3 {
+					tunel, err := GetRoom(Tor)
+					if err != nil {
+						continue
+					}
+					// case room
+					nest.Rooms = append(nest.Rooms, tunel)
+				}
 				// Remove the start indicator and its following element
 				result = append(result[:i], result[i+2:]...)
 				i-- // Adjust index after modification
+
 			case "##end":
 				nest.End = strings.Fields(nextArg)[0]
 				// Remove the end indicator and its following element
+				Tor := strings.Fields(nextArg)
+				if len(Tor) == 3 {
+					tunel, err := GetRoom(Tor)
+					if err != nil {
+						continue
+					}
+					// case room
+					nest.Rooms = append(nest.Rooms, tunel)
+				}
 				result = append(result[:i], result[i+2:]...)
 				i-- // Adjust index after modification
 			}

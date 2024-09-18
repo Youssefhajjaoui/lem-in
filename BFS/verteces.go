@@ -85,11 +85,22 @@ func (g *Graph) NewVerteces(names []string) map[string]*Vertex {
 	return snap
 }
 
-func MakeEdge(edges [][2]string, snap map[string]*Vertex) {
+func ConnectRooms(edges [][2]string, snap map[string]*Vertex) error {
 	for _, cols := range edges {
-		// name name
-		snap[cols[0]].Add_adjacent_vertex(snap[cols[1]])
+		// Ensure both vertices exist in the snap map
+		if vertex1, ok1 := snap[cols[0]]; ok1 {
+			if vertex2, ok2 := snap[cols[1]]; ok2 {
+				if err := vertex1.Add_adjacent_vertex(vertex2); err != nil {
+					return fmt.Errorf("%w: %s -> %s", err, cols[0], cols[1])
+				}
+			} else {
+				return fmt.Errorf("vertex %s not found in snap", cols[1])
+			}
+		} else {
+			return fmt.Errorf("vertex %s not found in snap", cols[0])
+		}
 	}
+	return nil
 }
 
 func (graph *Graph) PrintGraph() {
