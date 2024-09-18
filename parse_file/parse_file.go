@@ -3,121 +3,161 @@ package parse_file
 import (
 	"bufio"
 	"errors"
+	"strconv"
 
-	//	"fmt"
+	"fmt"
 	"os"
 	"strings"
-	// bfs "lem-in/BFS"
 )
 
-// this file contains function to:
-// 1- get the name of the file from the user
-// 2- open and read the file
-// 3- split the data of the file into 3
-// // starting room
-// // middle rooms
-// // end room
-// // links between rooms
-// every function should return the error type
-// so it can be used by others
+type Nest struct {
+	Rooms  []string
+	Tunels [][2]string
+	Start  string
+	End    string
+	Ants   int
+}
 
-func Getdata(filename string) ([]string, error) {
-	result := []string{}
+// fix the case of starnt and end
+// remove them after you use them.
+func FillTheNest(filename string) (Nest, error) {
+	var nest Nest
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, errors.New("error from open")
+		return nest, errors.New("error from open")
 	}
-	Scanner := bufio.NewScanner(file)
 	defer file.Close()
+
+	result := []string{}
+	Scanner := bufio.NewScanner(file)
 	for Scanner.Scan() {
-		line := Scanner.Text()
+		line := strings.TrimSpace(Scanner.Text())
+		if len(line) == 0 {
+			continue
+		}
+		if strings.HasPrefix(line, "#") && !strings.HasPrefix(line, "##") {
+			continue
+		}
 		result = append(result, line)
 	}
-	return result, nil
+	nest, err = Parse(result)
+	return nest, err
 }
 
-func GetNodes(arr []string) ([]string, error) {
-	Nodes := []string{}
-	for _, v := range arr {
-		if Len := len(strings.Split(v, " ")); Len == 3 {
-			Nodes = append(Nodes, strings.Split(v, "")[0])
+func Parse(result []string) (Nest, error) {
+
+	var nest Nest
+	if len(result) == 0 {
+		return nest, errors.New("empty file")
+	}
+	/// get the number of ants
+	var err error
+	nest.Ants, err = GetAnts(result)
+	if err != nil {
+		return nest, err
+	}
+	/////////////////////
+	for i := 0; i < len(result); i++ {
+		arg := result[i]
+
+		// Check for start and end indicators
+		if strings.HasPrefix(arg, "##") {
+			// Ensure there's a next element to check
+			if i == len(result)-1 {
+				return nest, errors.New("missing starting or ending room")
+			}
+
+			nextArg := result[i+1] // Store next argument for easier access
+			switch strings.ToLower(arg) {
+			case "##start":
+				nest.Start = strings.Fields(nextArg)[0]
+				Tor := strings.Fields(nextArg)
+				if len(Tor) == 3 {
+					tunel, err := GetRoom(Tor)
+					if err != nil {
+						continue
+					}
+					// case room
+					nest.Rooms = append(nest.Rooms, tunel)
+				}
+				// Remove the start indicator and its following element
+				result = append(result[:i], result[i+2:]...)
+				i-- // Adjust index after modification
+
+			case "##end":
+				nest.End = strings.Fields(nextArg)[0]
+				// Remove the end indicator and its following element
+				Tor := strings.Fields(nextArg)
+				if len(Tor) == 3 {
+					tunel, err := GetRoom(Tor)
+					if err != nil {
+						continue
+					}
+					// case room
+					nest.Rooms = append(nest.Rooms, tunel)
+				}
+				result = append(result[:i], result[i+2:]...)
+				i-- // Adjust index after modification
+			}
+			continue
+		}
+
+		/////////////////////////////////////////
+		Tor := strings.Fields(arg)
+		if len(Tor) == 3 {
+			tunel, err := GetRoom(Tor)
+			if err != nil {
+				continue
+			}
+			// case room
+			nest.Rooms = append(nest.Rooms, tunel)
+
+		} else if len(Tor) == 1 {
+			tunel, err := GetTunel(arg)
+			if err != nil || len(tunel) == 0 {
+				// Optionally log the error for debugging purposes
+				fmt.Printf("Error getting tunnel: %v\n", err)
+				continue
+			}
+			nest.Tunels = append(nest.Tunels, tunel)
+		}
+
+	}
+	return nest, nil
+}
+
+func GetAnts(args []string) (int, error) {
+	for _, arg := range args {
+		a := strings.Fields(arg)
+		if len(a) == 1 {
+			ant, err := strconv.Atoi(arg)
+			if err != nil {
+				continue
+			} else {
+				return ant, nil
+			}
 		}
 	}
-	return Nodes, nil
+	return 0, errors.New("no number of ants found")
 }
-
-// func ParsetoNode(arr []string) ([]*Vertex, error) {
-// 	values, err := GetNodes(arr)
-// 	if err != nil {
-// 		return nil, errors.New("NO Vertexes")
-// 	}
-// 	Nodes := []*Vertex{}
-// 	for i := 0; i < len(values); i++ {
-// 		g.Verteces = append(g.Verteces, &Vertex{
-// 			Name: values[i],
-// 		})
-// 	}
-// 	if len(Nodes) == 0 {
-// 		return nil, errors.New("error in the Nodes details")
-// 	}
-// 	return Nodes, nil
-// }
-
-func GetEdges(arr []string) ([][]string, error) {
-	cols := [][]string{}
-	rows := []string{}
-	for _, v := range arr {
-		if Len := len(strings.Split(v, "-")); Len == 2 {
-			rows = append(rows, strings.Split(v, "-")[0])
-			rows = append(rows, strings.Split(v, "-")[1])
-			cols = append(cols, rows)
-			rows = []string{}
-		}
+func GetRoom(room []string) (string, error) {
+	if len(room) != 3 {
+		return "", errors.New("not room")
 	}
-	if len(cols) == 0 {
-		return nil, errors.New("maybe no relation here")
+	_, err := strconv.Atoi(room[1])
+	if err != nil {
+		return "", errors.New("not room")
 	}
-	return cols, nil
+	_, err = strconv.Atoi(room[2])
+	if err != nil {
+		return "", errors.New("not room")
+	}
+	return room[0], nil
 }
-
-func GetStart(arr []string) string {
-	for i, v := range arr {
-		if v == "##start" {
-			return strings.Split(arr[i+1], "")[0]
-		}
+func GetTunel(tunel string) ([2]string, error) {
+	t := strings.Split(tunel, "-")
+	if len(t) != 2 { // Check the length of the split result, not the original string
+		return [2]string{}, errors.New("not a tunnel")
 	}
-	return ""
+	return [2]string{t[0], t[1]}, nil
 }
-
-func GetEnd(arr []string) string {
-	for i, v := range arr {
-		if v == "##end" {
-			return strings.Split(arr[i+1], "")[0]
-		}
-	}
-	return ""
-}
-
-// func ProcessInput(filename string) (*Graphs, error) {
-// 	g := &Graphs{}
-// 	input, err := Getdata(filename)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	Nodes, err := GetNodes(input)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	Rooms, err := g.ParsetoNode(Nodes)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	if err := g.GetEdges(input, Rooms); err != nil {
-// 		return nil, err
-// 	}
-// 	//	fmt.Println(g->adjacentVerteces)
-// 	//
-// 	// fmt.Println(g)
-// 	//
-// 	return g, nil
-// }

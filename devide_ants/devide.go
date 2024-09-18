@@ -1,111 +1,115 @@
-package devide 
+package devide
 
-import "fmt"
-import "errors"
-//import "os"
+
+
+import (
+	"errors"
+	"fmt"
+)
+
 
 type Path struct {
-	Rooms []string
+	Rooms     []string
 	Passenger int
-} 
-func NewPath()*Path{
-	return &Path{Rooms : []string{}, Passenger : 0 }
-}
-func (p *Path)Add(room string){
-	(*p).Rooms = append((*p).Rooms, room)
-}
-func (p *Path)Pass(){
-	p.Passenger ++
 }
 
-//////////////////////////////////////////////////////////
-type Paths []*Path 
-// add to the path ? 
-// declare Paths 
-func NewPaths()*Paths{
+func NewPath() *Path {
+	return &Path{Rooms: []string{}, Passenger: 0}
+}
+func (p *Path) Add(room string) {
+	(*p).Rooms = append((*p).Rooms, room)
+}
+func (p *Path) Pass() {
+	p.Passenger++
+}
+
+// ////////////////////////////////////////////////////////
+type Paths []*Path
+
+// add to the path ?
+// declare Paths
+func NewPaths() *Paths {
 	return &Paths{}
 }
-func (p *Paths)Append(path *Path){
-	*p = append(*p , path)
+func (p *Paths) Append(path *Path) {
+	*p = append(*p, path)
 }
-func (p *Paths)Shortest()(*Path, error){
-	if p == nil || len(*p) < 1  {
-		if p == nil {
-			return nil , errors.New("nil pointer, has no path")
-		}
-		return nil , errors.New("empty path")
+
+func (p *Paths) Shortest() (*Path, error) {
+	if len(*p) == 0 {
+		return nil, errors.New("no path found")
 	}
-	// this has to be the first 
 	var shortest = (*p)[0]
-	for _, path := range *p{
+	for _, path := range *p {
 		if path.Passenger <= shortest.Passenger {
 			shortest = path
-		}		
+		}
 	}
+
 	return shortest, nil
 }
-func Devide( ways [][]string, ants int)[][]string{
+func Devide(ways [][]string, ants int) ([][]string, error) {
 	// make new paths
 	paths := NewPaths()
-	for _ , p := range ways{
-		// make new path 
+	for _, p := range ways {
+		// make new path
 		path := NewPath()
-		for _, room := range p{
+		for _, room := range p {
 			path.Add(room)
 			path.Pass()
 		}
 		paths.Append(path)
 	}
 
-	
 	show := [][]string{}
-	for i := 1 ; i <= ants ; i ++ {
-		short , err := paths.Shortest()
+
+	for i := 1; i <= ants; i++ {
+		short, err := paths.Shortest()
 		if err != nil {
-			fmt.Println(err)
-			continue
-			//os.Exit(1)
+			return nil, err
+
 		}
 		short.Pass()
 		took := antpath(i, short.Rooms)
-		show = append(show , took)	
+		show = append(show, took)
 	}
 	mat := Retate(show)
-	return mat
+	return mat, nil
 }
 
-
-func antpath(ant int, path []string)[]string{
+func antpath(ant int, path []string) []string {
 	took := []string{}
-	for i:= len(path) - 2 ; i >= 0 ; i -- {
+	for i := len(path) - 2; i >= 0; i-- {
 		room := path[i]
 		took = append(took, fmt.Sprintf("L%d-%s", ant, room))
 
 	}
 	return took
 }
-func Retate(matrix [][]string)[][]string{
+func Retate(matrix [][]string) [][]string {
 	result := [][]string{}
 	stop := true
-	y := 0 
+	y := 0
 	for stop {
 		stop = false
 		line := []string{}
-		for i := 0 ; i < len(matrix)  ; i ++ {
+		for i := 0; i < len(matrix); i++ {
 			branch := matrix[i]
 			if len(branch) > y {
 				stop = true
-				if y == len(branch) -1 {
-					line= append(line, branch[y])
-				}else if !Check(line , branch[y]) {
-					line= append(line, branch[y])
-				}else{
-					matrix[i] = append([]string{""} , branch...)
+
+				if y == len(branch)-1 {
+					line = append(line, branch[y])
+				} else if !Check(line, branch[y]) {
+					line = append(line, branch[y])
+				} else {
+					matrix[i] = append([]string{""}, branch...)
+
 				}
 			}
 		}
-		result = append(result , line)
-		y ++
+		result = append(result, line)
+		y++
 	}
 	return result
 }
@@ -138,16 +142,17 @@ func Check(words []string, word string) bool {
 
 	return false
 }
+
 // desplay the result to on the terminal
-func Print(mat [][]string){
+func Print(mat [][]string) {
 	for _, line := range mat {
 		if len(line) == 0 {
 			continue
 		}
-		for i , word := range line {
+		for i, word := range line {
 			if word != "" {
 				fmt.Print(word)
-				if i != len(line) -1 {
+				if i != len(line)-1 {
 					fmt.Print(" ")
 				}
 			}

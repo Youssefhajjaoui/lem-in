@@ -2,7 +2,6 @@ package bfs
 
 import (
 	"fmt"
-
 	Q "lem-in/queue"
 )
 
@@ -20,43 +19,41 @@ func (g *Graph) Add(v *Vertex) {
 	g.Verteces = append(g.Verteces, v)
 }
 
-func (graph *Graph) PrintGraph() {
-	for _, n := range graph.Verteces {
-		fmt.Printf("Room %s: ", n.Name)
-		for _, neighbor := range n.adjacentVerteces {
-			fmt.Printf("%s <-> ", neighbor.Name)
-		}
-		fmt.Println("nil")
-	}
-	fmt.Printf("START: %s\n", graph.Start.Name)
-	fmt.Printf("END: %s\n", graph.End.Name)
-}
-
-// this traverse all the graph
+// Traverse traverses all the vertices in the graph.
 func (g *Graph) Traverse() {
-	fmt.Println("start traversing")
-	// make a que
+	fmt.Println("start traversing the graph")
+	fmt.Println("this is the start: ", g.Start.Name)
+
+	// Initialize the queue
 	q := Q.New()
 	q.Enqueue(g.Start)
-	fmt.Println(g.Start.Name)
-	// make a map
+
+	// Create a map to track visited vertices
 	visited := make(map[*Vertex]bool)
 	visited[g.Start] = true
-	// start from the q and gethem all
-	// e is a node
+	// Start traversing the graph
 	for !q.IsEmpty() {
+
 		dequeuedItem := q.Dequeue()
 		e, ok := dequeuedItem.Item.(*Vertex)
+
 		if !ok {
+
 			continue
 		}
-		for _, l := range e.adjacentVerteces {
-			if visited[l] {
+
+		// Process all adjacent vertices
+	
+	
+		for _, adjVertex := range e.adjacentVerteces {
+	
+			if visited[adjVertex] {
 				continue
 			}
-			visited[l] = true
-			q.Enqueue(l)
-			fmt.Print(l.Name + "->")
+
+			visited[adjVertex] = true
+			q.Enqueue(adjVertex)
+			fmt.Print(adjVertex.Name + "->")
 		}
 	}
 	fmt.Println("end traversing the graph")
@@ -95,13 +92,6 @@ func (g *Graph) Search(name string) *Vertex {
 	return nil
 }
 
-// start from the end,
-// get all the rooms pointing to the end
-// if a room from those room points somewhere else
-// remove that link ?
-// this is just a normal search, you can  use it to undestand
-// the next method that is build on this one
-// actually i don't even rememver what i did by this function
 func (g *Graph) ValidPaths(end string) [][2]string {
 	// make a que
 	q := Q.New()
@@ -110,7 +100,7 @@ func (g *Graph) ValidPaths(end string) [][2]string {
 	visited := make(map[*Vertex]bool)
 	visited[g.Start] = true
 	from := [][2]string{}
-	// from[g.Start.Name] = g.Start.Name
+	//from[g.Start.Name] = g.Start.Name
 	from = append(from, [2]string{g.Start.Name, g.Start.Name})
 	// start from the q and gethem all
 	// e is a node
@@ -128,7 +118,7 @@ func (g *Graph) ValidPaths(end string) [][2]string {
 				visited[l] = true
 			}
 			q.Enqueue(l)
-			// from[l.Name] = e.Name
+			//from[l.Name] = e.Name
 			from = append(from, [2]string{l.Name, e.Name})
 		}
 	}
@@ -138,21 +128,24 @@ func (g *Graph) ValidPaths(end string) [][2]string {
 // ///////////////////////////////////////////////////////
 // this is bfs that allows me to find one path
 func (g *Graph) FirstSet(name string, pas map[string]bool) []string {
+
+
+
 	// make a que
 	visited := copyMap(pas)
 	q := Q.New()
 	q.Enqueue(g.Start)
 	// make a map
-	// visited := make(map[*Vertex]bool)
+
+	//visited := make(map[*Vertex]bool)
+
 	visited[g.Start.Name] = true
 	var from [][2]string
 	if g.Start.Name == name {
 		return assemble(from, name)
 	}
-	// start from the q and gethem all
-	// e is a node
-	// i need a data type to store the path in.
-	// var found = false
+
+
 	for !q.IsEmpty() {
 		found := false
 		save := []*Vertex{}
@@ -224,7 +217,7 @@ func (g *Graph) FindAllWays() [][]string {
 	name := g.End.Name
 	var paths [][]string
 	block := make(map[string]bool)
-	stop := true
+	var stop = true
 	for stop {
 		ss := g.FirstSet(name, block)
 		if len(ss) == 0 {
