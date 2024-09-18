@@ -17,6 +17,17 @@ type Nest struct {
 	End    string
 	Ants   int
 }
+func GetFileName(args []string) (string, error) {
+    if len(args) != 1 {
+        return "", errors.New("more than one argument")
+    }
+    arg := args[0]
+    if !strings.HasSuffix(arg, ".txt") {
+        return "", errors.New("only files with .txt extension allowed")
+    }
+    return arg, nil
+}
+
 
 // fix the case of starnt and end
 // remove them after you use them.
