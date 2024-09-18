@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	bfs "lem-in/BFS"
 	devide "lem-in/devide_ants"
 	fl "lem-in/parse_file"
@@ -11,7 +13,11 @@ func main() {
 	// declare a new graph
 	graph := bfs.NewGraph()
 	// get data from file
-	nest, err := fl.FillTheNest("data.txt")
+	filename := "data.txt"
+	if len(os.Args[1:]) != 0 {
+		filename = os.Args[1]
+	}
+	nest, err := fl.FillTheNest(filename)
 	if err != nil {
 		fmt.Println(err)
 		return
