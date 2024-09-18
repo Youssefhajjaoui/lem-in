@@ -68,9 +68,26 @@ func Parse(result []string)(Nest, error){
 					nest.End= strings.Fields(arg)[0]
 				}
 			}
+			continue
 		}
 	/////////////////////////////////////////
-		arg := strings.Fields(result[i])
+		Tor := strings.Fields(arg)
+		if len(Tor) == 3 {
+			Tunel , err := GetRoom(Tor)
+			if err != nil{
+				continue
+			}
+			// case room
+			nest.Rooms = append(nest.Rooms, GetRoom(Tor))
+
+		}else if len(arg) == 1 {
+			Tunel , err := GetTunel(Tor)
+			if err != nil{
+				continue
+			}
+			nest.Tunels= append(nest.Tonels, GetTunel(Tor))
+				
+		}
 	}
 }
 
@@ -87,54 +104,24 @@ func GetAnts(args []string)(int,error){
 		}
 	return 0 , errors.New("no number of ants found")
 }
-func IsRoom(){}
-func IsTunel(){}
-
-
-
-func GetNodes(arr []string) ([]string, error) {
-	Nodes := []string{}
-	for _, v := range arr {
-		if Len := len(strings.Split(v, " ")); Len == 3 {
-			Nodes = append(Nodes, strings.Split(v, "")[0])
-		}
+func GetRoom(room []string)(string, error){
+	if len(room)!= 3 {
+		return "", errors.New("not room")
 	}
-	return Nodes, nil
+	_, err := string.atoi(room[1])
+	if err!= nil{
+		return "", errors.new("not room")
+	}
+	_, err := string.atoi(room[2])
+	if err!= nil{
+		return "", errors.new("not room")
+	}
+	return room[0], nil
 }
-
-
-func GetEdges(arr []string) ([][]string, error) {
-	cols := [][]string{}
-	for _, v := range arr {
-		rows := []string{}
-		Len := strings.Split(v, "-")
-		if len(Len) == 2 {
-			rows = append(rows, Len[0])
-			rows = append(rows, Len[1])
-			cols = append(cols, rows)
-		}
+func GetTunel(tunel string)([2]string, error){
+	t := strings.Split(tunel, "-")
+	if len(tunel)!= 2 {
+		return "", errors.New("not tunel")
 	}
-	if len(cols) == 0 {
-		return nil, errors.New("maybe no relation here")
-	}
-	return cols, nil
-}
-
-func GetStart(arr []string) string {
-	for i, v := range arr {
-		if v == "##start" {
-			//return strings.Split(arr[i+1], " ")[0]
-			return arr[i+1]
-		}
-	}
-	return ""
-}
-
-func GetEnd(arr []string) string {
-	for i, v := range arr {
-		if v == "##end" {
-			return strings.Split(arr[i+1], " ")[0]
-		}
-	}
-	return ""
+	return [2]string{t[0], t[1]}
 }
