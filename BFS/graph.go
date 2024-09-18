@@ -60,78 +60,7 @@ func (g *Graph) Traverse() {
 	fmt.Println("end traversing the graph")
 }
 
-// this is searching an intem and returning pointer to the vertex
-func (g *Graph) Search(name string) *Vertex {
-	// make a que
-	q := Q.New()
-	q.Enqueue(g.Start)
-	// make a map
-	visited := make(map[*Vertex]bool)
-	visited[g.Start] = true
-	if g.Start.Name == name {
-		return g.Start
-	}
-	// start from the q and gethem all
-	// e is a node
-	for !q.IsEmpty() {
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-		if !ok {
-			continue
-		}
-		for _, l := range e.adjacentVerteces {
-			if l.Name == name {
-				return l
-			}
-			if visited[l] {
-				continue
-			}
-			visited[l] = true
-			q.Enqueue(l)
-		}
-	}
-	return nil
-}
-
-func (g *Graph) ValidPaths() [][2]string {
-	// make a que
-	q := Q.New()
-	q.Enqueue(g.Start)
-	// make a map
-	visited := make(map[*Vertex]bool)
-	visited[g.Start] = true
-	from := [][2]string{}
-	//from[g.Start.Name] = g.Start.Name
-	from = append(from, [2]string{g.Start.Name, g.Start.Name})
-	// start from the q and gethem all
-	// e is a node
-	for !q.IsEmpty() {
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-		if !ok {
-			continue
-		}
-		for _, l := range e.adjacentVerteces {
-			if visited[l] {
-				continue
-			}
-			// only the end should not be indexed 
-			// as visited and shouldn't be added to the queue
-			if l.Name != g.End.Name{
-				visited[l] = true
-				q.Enqueue(l)
-			}
-			from = append(from, [2]string{l.Name, e.Name})
-		}
-	}
-	return from
-}
-
-// ///////////////////////////////////////////////////////
-// this is bfs that allows me to find one path
 func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
-
-
 
 	// make a que
 	visited := copyMap(pas)
@@ -158,7 +87,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 			continue
 		}
 		///////////////////////////////////////
-		for _, l := range e.adjacentVerteces {
+		for i , l := range e.adjacentVerteces {
 			if visited[l.Name] {
 				continue
 			}
@@ -166,6 +95,11 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 				visited[l.Name] = true
 			} else {
 				found = true
+				// break the bind
+				if e == g.Start{
+					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
+
+				}
 			}
 			save = append(save, l)
 			from = append(from, [2]string{e.Name, l.Name})
