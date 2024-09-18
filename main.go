@@ -34,7 +34,7 @@ func main() {
 	graph.Traverse()
 	all := graph.FindAllWays()
 
-	mat, err := devide.Devide(all, 3)
+	mat, err := devide.Devide(all, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
