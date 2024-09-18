@@ -43,7 +43,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
+	fmt.Println("roods found: ", all)
 	mat, err := devide.Devide(all, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
