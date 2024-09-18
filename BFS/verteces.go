@@ -6,7 +6,7 @@ import (
 )
 
 type Vertex struct {
-	Name string
+	Name             string
 	adjacentVerteces []*Vertex
 }
 
@@ -16,19 +16,21 @@ func NewVertex(name string) *Vertex {
 		adjacentVerteces: []*Vertex{},
 	}
 }
-/////////////////////////////////////////////////////////////////////////////////
+
+// ///////////////////////////////////////////////////////////////////////////////
 // this is to relate verticies
-func (v *Vertex)Add_adjacent_vertex(vertex *Vertex)error{
-	does , err := v.include(vertex)
+func (v *Vertex) Add_adjacent_vertex(vertex *Vertex) error {
+	does, err := v.include(vertex)
 	if err != nil {
-		return err 
+		return err
 	}
 	if !does {
 		v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	}
-		vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
-		return nil
+	vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
+	return nil
 }
+
 /////////////////////////////////////////////////////////////////////////////////
 
 // check if if the v is already related to vertex
@@ -41,7 +43,7 @@ func (v *Vertex) include(vertex *Vertex) (bool, error) {
 		if vertex == nil {
 			err = errors.New("distination pointer is nil")
 		}
-		return false , err
+		return false, err
 	}
 	for _, e := range v.adjacentVerteces {
 		if e == vertex {
@@ -71,20 +73,21 @@ func (g *Graph) GetnodbyValue(value string) (*Vertex, error) {
 
 	return nil, errors.New("no vertex with this name")
 }
+
 // the name of a vertex can not be repeated
-func (g *Graph) CreatNodes(Nodes []string)map[string]*Vertex {
+func (g *Graph) NewVerteces(names []string) map[string]*Vertex {
 	var snap = make(map[string]*Vertex)
-	for _, Node := range Nodes {
-		vertex := NewVertex(Node)
-		snap[Node] = vertex
+	for _, name := range names {
+		vertex := NewVertex(name)
+		snap[name] = vertex
 		g.Verteces = append(g.Verteces, vertex)
 	}
 	return snap
 }
 
-func CreatEdge(edges [][]string,snap  map[string]*Vertex) {
+func MakeEdge(edges [][2]string, snap map[string]*Vertex) {
 	for _, cols := range edges {
-		// name name 
+		// name name
 		snap[cols[0]].Add_adjacent_vertex(snap[cols[1]])
 	}
 }
