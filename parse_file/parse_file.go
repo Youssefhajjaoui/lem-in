@@ -93,14 +93,16 @@ func Parse(result []string) (Nest, error) {
 			// case room
 			nest.Rooms = append(nest.Rooms, tunel)
 
-		} else if len(arg) == 1 {
+		} else if len(Tor) == 1 {
 			tunel, err := GetTunel(arg)
-			if err != nil {
+			if err != nil || len(tunel) == 0 {
+				// Optionally log the error for debugging purposes
+				fmt.Printf("Error getting tunnel: %v\n", err)
 				continue
 			}
 			nest.Tunels = append(nest.Tunels, tunel)
-
 		}
+
 	}
 	return nest, nil
 }
@@ -135,8 +137,8 @@ func GetRoom(room []string) (string, error) {
 }
 func GetTunel(tunel string) ([2]string, error) {
 	t := strings.Split(tunel, "-")
-	if len(tunel) != 2 {
-		return [2]string{}, errors.New("not tunel")
+	if len(t) != 2 { // Check the length of the split result, not the original string
+		return [2]string{}, errors.New("not a tunnel")
 	}
 	return [2]string{t[0], t[1]}, nil
 }
