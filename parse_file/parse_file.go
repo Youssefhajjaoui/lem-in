@@ -19,12 +19,15 @@ type Nest struct {
 }
 func GetFileName(args []string) (string, error) {
     if len(args) != 1 {
-        return "", errors.New("more than one argument")
+        return "", errors.New("Bad Arguments")
     }
     arg := args[0]
     if !strings.HasSuffix(arg, ".txt") {
         return "", errors.New("only files with .txt extension allowed")
     }
+/*	if strings.Contains(arg , "/"){
+		return "", errors.New("invalid path, only file from the working derectory are allowed")
+	}*/
     return arg, nil
 }
 
