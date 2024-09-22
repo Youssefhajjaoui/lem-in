@@ -6,15 +6,7 @@ import (
 	"sort"
 )
 
-type Graph struct {
-	Verteces []*Vertex
-	Start    *Vertex // the starting room
-	End      *Vertex // the ending room
-	Paths    []*Path
-	Aints    int
-	Target   int
-	All      [][]string
-}
+
 
 type Path struct {
 	Score int
@@ -68,8 +60,8 @@ func (g *Graph) GetPaths(path []string, target string, start string) {
 	}
 
 	// Find the vertex corresponding to the current room
-	vertex, found := g.GetnodbyValue(start)
-	if found != nil {
+	vertex, ok := g.Verteces[start]
+	if !ok {
 		return
 	}
 

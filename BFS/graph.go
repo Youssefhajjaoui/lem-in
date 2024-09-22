@@ -1,23 +1,35 @@
 package bfs
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	Q "lem-in/queue"
 )
 
+/*
+	type Graph struct {
+		Verteces []*Vertex
+		Start    *Vertex // the starting room
+		End      *Vertex // the ending room
+	}
+*/
 type Graph struct {
-	Verteces []*Vertex
+	//Verteces []*Vertex
+	Verteces map[string]*Vertex
 	Start    *Vertex // the starting room
 	End      *Vertex // the ending room
+	Paths    []*Path
+	Aints    int
+	Target   int
+	All      [][]string
 }
 
 func NewGraph() *Graph {
-	return &Graph{Verteces: []*Vertex{}, Start: nil, End: nil}
+	return &Graph{Verteces: make(map[string]*Vertex), Start: nil, End: nil}
 }
 
 func (g *Graph) Add(v *Vertex) {
-	g.Verteces = append(g.Verteces, v)
+	g.Verteces[v.Name] = v
 }
 
 // Traverse traverses all the vertices in the graph.
@@ -44,10 +56,9 @@ func (g *Graph) Traverse() {
 		}
 
 		// Process all adjacent vertices
-	
-	
+
 		for _, adjVertex := range e.adjacentVerteces {
-	
+
 			if visited[adjVertex] {
 				continue
 			}
@@ -72,10 +83,9 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 
 	visited[g.Start.Name] = true
 	var from [][2]string
-	if g.Start.Name == g.End.Name{
-		return nil , errors.New("the starting and ending rooms are the same")
+	if g.Start.Name == g.End.Name {
+		return nil, errors.New("the starting and ending rooms are the same")
 	}
-
 
 	for !q.IsEmpty() {
 		found := false
@@ -87,7 +97,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 			continue
 		}
 		///////////////////////////////////////
-		for i , l := range e.adjacentVerteces {
+		for i, l := range e.adjacentVerteces {
 			if visited[l.Name] {
 				continue
 			}
@@ -96,7 +106,7 @@ func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
 			} else {
 				found = true
 				// break the bind
-				if e == g.Start{
+				if e == g.Start {
 					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
 
 				}
@@ -155,9 +165,9 @@ func (g *Graph) FindAllWays() ([][]string, error) {
 	block := make(map[string]bool)
 	var stop = true
 	for stop {
-		ss, err  := g.FirstSet(name, block)
+		ss, err := g.FirstSet(name, block)
 		if err != nil {
-			return nil , err
+			return nil, err
 		}
 		if len(ss) == 0 {
 			stop = false
