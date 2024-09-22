@@ -6,8 +6,6 @@ import (
 	"sort"
 )
 
-
-
 type Path struct {
 	Score int
 	Rooms []string
