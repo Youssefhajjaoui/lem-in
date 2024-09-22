@@ -53,6 +53,7 @@ func (g *Graph) GetPaths(path []string, target string, start string) {
 	if start == target {
 		newPath := make([]string, len(path))
 		copy(newPath, path)
+		Reverse(newPath)
 		g.Paths = append(g.Paths, &Path{Rooms: newPath})
 		return
 	}
@@ -169,4 +170,16 @@ func (graph *Graph) PrintGraph() {
 	}
 	fmt.Printf("START: %s\n", graph.Start.Name)
 	fmt.Printf("END: %s\n", graph.End.Name)
+}
+
+func Reverse(arr []string) {
+	left := 0
+	right := len(arr) - 1
+
+	// Swap elements from both ends towards the center
+	for left < right {
+		arr[left], arr[right] = arr[right], arr[left]
+		left++
+		right--
+	}
 }
