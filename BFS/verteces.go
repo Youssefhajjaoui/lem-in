@@ -67,21 +67,17 @@ func (v *Vertex) include(vertex *Vertex) (bool, error) {
 }
 
 // the name of a vertex can not be repeated
-func (g *Graph) NewVerteces(names []string) map[string]*Vertex {
-	var snap = make(map[string]*Vertex)
+func (g *Graph) NewVerteces(names []string) {
 	for _, name := range names {
-		vertex := NewVertex(name)
-		snap[name] = vertex
-		g.Verteces = append(g.Verteces, vertex)
+		g.Verteces[name] = NewVertex(name)
 	}
-	return snap
 }
 
-func ConnectRooms(edges [][2]string, snap map[string]*Vertex) error {
+func (g *Graph) ConnectRooms(edges [][2]string) error {
 	for _, cols := range edges {
 		// Ensure both vertices exist in the snap map
-		if vertex1, ok1 := snap[cols[0]]; ok1 {
-			if vertex2, ok2 := snap[cols[1]]; ok2 {
+		if vertex1, ok1 := g.Verteces[cols[0]]; ok1 {
+			if vertex2, ok2 := g.Verteces[cols[1]]; ok2 {
 				if err := vertex1.AddAdjacentVertex(vertex2); err != nil {
 					return fmt.Errorf("%w: %s -> %s", err, cols[0], cols[1])
 				}
