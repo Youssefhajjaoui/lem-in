@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	bfs "lem-in/BFS"
 	devide "lem-in/devide_ants"
 	fl "lem-in/parse_file"
-	"os"
 )
 
 func main() {
@@ -24,7 +25,7 @@ func main() {
 	}
 
 	// snap is a map name *vertex.
-	//snap :=
+	// snap :=
 	graph.NewVerteces(nest.Rooms)
 	// graph.Start = snap[nest.Start]
 	// graph.End = snap[nest.End]
@@ -33,14 +34,14 @@ func main() {
 
 	// creat edges relations betwen vertexes
 	err = graph.ConnectRooms(nest.Tunels)
-
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	// graph.PrintGraph()
 	// creat start and end
 
-	graph.Traverse()
+	// graph.Traverse()
 	// all, err := graph.FindAllWays()
 	// if err != nil {
 	// 	fmt.Println(err)

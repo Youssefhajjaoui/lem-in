@@ -27,9 +27,6 @@ func (g *Graph) AllPaths() {
 	g.CalcScore()
 	g.SortPaths()
 	g.Paths = g.CleanPaths()
-	g.Sort()
-	g.Toall()
-	// Print the cleaned paths
 	for _, path := range g.Paths {
 		for i, room := range path.Rooms {
 			fmt.Printf("%s", room)
@@ -39,6 +36,9 @@ func (g *Graph) AllPaths() {
 		}
 		fmt.Println()
 	}
+	g.Sort()
+	g.Toall()
+	// Print the cleaned paths
 }
 
 func (g *Graph) Toall() {
@@ -124,10 +124,6 @@ func (g *Graph) CleanPaths() []*Path {
 			}
 		}
 
-		// Stop if we've reached the target number of paths
-		if len(result) >= g.Target {
-			break
-		}
 	}
 	return result
 }
@@ -161,5 +157,16 @@ func (g *Graph) CalcScore() {
 // func (g *Graph) Toprint() {
 // 	for i := 0; i < g.Aints; i++ {
 
-// 	}
-// }
+//		}
+//	}
+func (graph *Graph) PrintGraph() {
+	for _, n := range graph.Verteces {
+		fmt.Printf("Room %s: ", n.Name)
+		for _, neighbor := range n.adjacentVerteces {
+			fmt.Printf("%s <-> ", neighbor.Name)
+		}
+		fmt.Println("nil")
+	}
+	fmt.Printf("START: %s\n", graph.Start.Name)
+	fmt.Printf("END: %s\n", graph.End.Name)
+}
