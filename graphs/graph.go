@@ -22,49 +22,30 @@ func (g *Graph) Add(v *Vertex) {
 	g.Verteces[v.Name] = v
 }
 
-// this is used to track the path i used to the end
-func assemble(parts [][2]string, exit string) []string {
-	var find string
-	path := []string{}
-	done := false
-	for i := len(parts) - 1; i >= 0; i-- {
-		if parts[i][1] == exit && !done {
-			path = append(path, exit)
-			path = append(path, parts[i][0])
-			done = true
-			find = parts[i][0]
-		}
-		if done {
-			if parts[i][1] == find {
-				path = append(path, parts[i][0])
-				find = parts[i][0]
-			}
-		}
-
-	}
-	return path
-}
-
 // BFS to find an augmenting path between from and to
 func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
+
 	//parent := make(map[*Vertex]*Vertex)
-	parent := [][2]string{}
+	//parent := [][2]string{}
+	parent := make(map[*Vertex]*Vertex)
 	q := queue.New() // Using a simple slice as a queue
 	q.Enqueue(from)
 	visited[from.Name] = true
 	// If we reach the Start node, we can construct the path
 
 	for !q.IsEmpty() {
+
 		current := q.Dequeue().Item.(*Vertex)
 		if current == to {
-			return assemble(parent, g.Start.Name)
+			//return assemble(parent, to.Name)
+			return constructPath(parent, from, to)
 		}
 		for _, neighbor := range current.adjacentVerteces {
 			if !visited[neighbor.Name] { // Not visited
 				q.Enqueue(neighbor) // Enqueue
 				visited[neighbor.Name] = true
-				//parent[neighbor] = current
-				parent = append(parent, [2]string{current.Name, neighbor.Name})
+				parent[current] = neighbor
+
 			}
 		}
 	}
@@ -81,7 +62,7 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 		}
 		paths = append(paths, path)
 		for _, v := range path {
-			if v != g.Start.Name {
+			if v != to.Name {
 				visited[v] = true
 			}
 		}
@@ -89,9 +70,19 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 	return paths
 }
 
-/*#####################################################################*/
+// Helper function to reconstruct the path from parent map
+func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
+	var path []string
+	for v := from; v != nil; v = parent[v] { // Fix here: start from end
+		path = append(path, v.Name) // Prepend the node
+	}
+	return path
+}
+
+
+/*##############################################################*/
 // function of debuging
-/*#####################################################################*/
+/*##############################################################*/
 
 // this is a function that traverse the graph from -> from tell there
 // is nothing more to traverse

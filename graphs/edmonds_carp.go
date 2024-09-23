@@ -82,19 +82,3 @@ func (g *Graph) EdmondsKarp() (int, [][]string) {
 	return totalFlow, paths
 }
 
-func copyMapV(original map[*Vertex]bool) map[*Vertex]bool {
-	newMap := make(map[*Vertex]bool)
-	for key, value := range original {
-		newMap[key] = value
-	}
-	return newMap
-}
-
-// Helper function to reconstruct the path from parent map
-func constructPath(parent map[*Vertex]*Vertex, start, end *Vertex) []string {
-	var path []string
-	for node := end; node != nil; node = parent[node] { // Fix here: start from end
-		path = append([]string{node.Name}, path...) // Prepend the node
-	}
-	return path
-}

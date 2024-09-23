@@ -31,13 +31,22 @@ func (v *Vertex) AddAdjacentVertex(vertex *Vertex) error {
 	if err != nil {
 		return err
 	}
-	// recursevly add the adjacent vertex to the next end
+
 	if !alreadyConnected {
 		v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	}
+
+	// Ensure the adjacent vertex points back to the current vertex
+	alreadyConnected, err = vertex.include(v)
+	if err != nil {
+		return err
+	}
+	if !alreadyConnected {
+		vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
+	}
+
 	return nil
 }
-
 // include checks if the vertex is already related to the given vertex.
 func (v *Vertex) include(vertex *Vertex) (bool, error) {
 	if v == nil {
