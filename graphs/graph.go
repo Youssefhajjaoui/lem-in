@@ -43,8 +43,9 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 			// case of the start connected to the end
 			if len(path) == 2 {
 				// break the connection forward	
-				g.BreakEndStart()
-
+				err := g.breakEndStart()
+				fmt.Println(err)
+				return nil
 			}
 			return path
 			
@@ -70,9 +71,11 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 			break
 		}
 		paths = append(paths, path)
-		for _, v := range path {
-			if v != to.Name {
-				visited[v] = true
+		if len(path) != 2 {
+			for _, v := range path {
+				if v != to.Name {
+					visited[v] = true
+				}
 			}
 		}
 	}
@@ -87,7 +90,7 @@ func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 	}
 	return path
 }
-func (g *Graph)BreakEndStart()error{
+func (g *Graph)breakEndStart()error{
 	var s int
 	for i, v  := range  g.End.adjacentVerteces {
 		if v == g.Start {
@@ -98,7 +101,9 @@ func (g *Graph)BreakEndStart()error{
 	if g.End.adjacentVerteces[s] != g.Start{
 		return errors.New("no connection end start")
 	}else{
+		fmt.Println(g.End.adjacentVerteces)
 		g.End.adjacentVerteces = append(g.End.adjacentVerteces[:s], g.End.adjacentVerteces[s+1:]...)
+		fmt.Println(g.End.adjacentVerteces)
 	}
 	return nil
 }
@@ -135,7 +140,6 @@ func (g *Graph) Traverse(from *Vertex) {
 			if visited[adjVertex] {
 				continue
 			}
-
 			visited[adjVertex] = true
 			q.Enqueue(adjVertex)
 			fmt.Print(adjVertex.Name + "->")

@@ -5,6 +5,7 @@ import (
 	graphs "lem-in/graphs"
 	fl "lem-in/parse_file"
 	"os"
+	devide "lem-in/devide_ants"
 )
 
 func main() {
@@ -39,5 +40,14 @@ func main() {
 	/*############# Find the Best Paths ##############*/
 	maxFlow, _ := graph.EdmondsKarp()
 	fmt.Println("max flow is: ", maxFlow)
-	fmt.Println(graph.AllPaths(graph.End, graph.Start))
+	all := graph.AllPaths(graph.End, graph.Start)
+	fmt.Println(all)
+	/*############# Devide The Ants ##################*/
+	mat, err := devide.Devide(all, nest.Ants)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	//////////////////////
+	devide.Print(mat)
 }
