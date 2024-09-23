@@ -39,7 +39,7 @@ func main() {
 	//////////////////////////////////////////////////////////////////
 	// #############################################################
 
-	all, err := graph.FindAllWays()
+	all := graph.AllPaths(graph.Start, graph.End)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -48,10 +48,7 @@ func main() {
 
 	maxFlow, _ := graph.EdmondsKarp()
 	fmt.Println("max flow is: ", maxFlow)
-	all, err = graph.BackFindAllWays()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 	fmt.Println(all)
+	fmt.Println("night light")
+	fmt.Println(graph.AllPaths(graph.End, graph.Start))
 }

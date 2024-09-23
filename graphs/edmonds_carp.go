@@ -81,17 +81,7 @@ func (g *Graph) EdmondsKarp() (int, [][]string) {
 
 	return totalFlow, paths
 }
-func (g *Graph) NightLight() [][]string {
-	visited := make(map[*Vertex]bool)
-	paths := [][]string{}
-	for path := g.BackwardBFS(copyMapV(visited)); len(path) != 0; {
-		paths = append(paths, path)
-		for _, v := range path {
-			visited[g.Verteces[v]] = true
-		}
-	}
-	return paths
-}
+
 func copyMapV(original map[*Vertex]bool) map[*Vertex]bool {
 	newMap := make(map[*Vertex]bool)
 	for key, value := range original {
@@ -100,48 +90,11 @@ func copyMapV(original map[*Vertex]bool) map[*Vertex]bool {
 	return newMap
 }
 
-// BFS function to find the shortest path from End to Start
-func (g *Graph) BackwardBFS(visited map[*Vertex]bool) []string {
-	// Queue to store the nodes for BFS
-	q := queue.New()
-	q.Enqueue(g.End)
-
-	// Map to store the parent of each node in the BFS tree
-	parent := make(map[*Vertex]*Vertex)
-	//visited := make(map[*Vertex]bool)
-
-	visited[g.End] = true
-
-	// BFS loop
-	for !q.IsEmpty() {
-		// Get the current node
-		node := q.Dequeue().Item.(*Vertex)
-
-		// If we reach the Start node, we can construct the path
-		if node == g.Start {
-			return constructPath(parent, g.Start, g.End)
-		}
-
-		// Explore all adjacent nodes
-		for _, neighbor := range g.End.adjacentVerteces {
-			if !visited[neighbor] {
-				visited[neighbor] = true
-				parent[neighbor] = node
-				q.Enqueue(neighbor)
-			}
-		}
-	}
-
-	// Return an empty slice if no path is found
-	return []string{}
-}
-
 // Helper function to reconstruct the path from parent map
 func constructPath(parent map[*Vertex]*Vertex, start, end *Vertex) []string {
 	var path []string
-	for node := start; node != end; node = parent[node] {
+	for node := end; node != nil; node = parent[node] { // Fix here: start from end
 		path = append([]string{node.Name}, path...) // Prepend the node
 	}
-	path = append([]string{end.Name}, path...) // Add the end node at the start
 	return path
 }

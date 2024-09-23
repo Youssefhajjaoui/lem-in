@@ -1,176 +1,25 @@
 package graphs
 
 import (
-	"errors"
 	"fmt"
+	"lem-in/queue"
 	Q "lem-in/queue"
+	"lem-in/utils"
 )
 
-/*
-	type Graph struct {
-		Verteces []*Vertex
-		Start    *Vertex // the starting room
-		End      *Vertex // the ending room
-	}
-*/
 type Graph struct {
-	//Verteces []*Vertex
 	Verteces map[string]*Vertex
 	Start    *Vertex // the starting room
 	End      *Vertex // the ending room
-	Paths    []*Path
-	Aints    int
-	Target   int
-	All      [][]string
 }
 
 func NewGraph() *Graph {
 	return &Graph{Verteces: make(map[string]*Vertex), Start: nil, End: nil}
 }
 
+// add a vertex to the graph
 func (g *Graph) Add(v *Vertex) {
 	g.Verteces[v.Name] = v
-}
-
-// Traverse traverses all the vertices in the graph.
-func (g *Graph) Traverse() {
-	fmt.Println("start traversing the graph")
-	fmt.Println("this is the start: ", g.Start.Name)
-
-	// Initialize the queue
-	q := Q.New()
-	q.Enqueue(g.Start)
-
-	// Create a map to track visited vertices
-	visited := make(map[*Vertex]bool)
-	visited[g.Start] = true
-	// Start traversing the graph
-	for !q.IsEmpty() {
-
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-
-		if !ok {
-
-			continue
-		}
-
-		// Process all adjacent vertices
-
-		for _, adjVertex := range e.adjacentVerteces {
-
-			if visited[adjVertex] {
-				continue
-			}
-
-			visited[adjVertex] = true
-			q.Enqueue(adjVertex)
-			fmt.Print(adjVertex.Name + "->")
-		}
-	}
-	fmt.Println("end traversing the graph")
-}
-
-// Traverse traverses all the vertices in the graph.
-func (g *Graph) BackwardTraverse() {
-	fmt.Println("start traversing the graph")
-	fmt.Println("this is the start: ", g.End.Name)
-
-	// Initialize the queue
-	q := Q.New()
-	q.Enqueue(g.End)
-
-	// Create a map to track visited vertices
-	visited := make(map[*Vertex]bool)
-	visited[g.End] = true
-	// Start traversing the graph
-	for !q.IsEmpty() {
-
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-
-		if !ok {
-
-			continue
-		}
-
-		// Process all adjacent vertices
-
-		for _, adjVertex := range e.adjacentVerteces {
-
-			if visited[adjVertex] {
-				continue
-			}
-
-			visited[adjVertex] = true
-			q.Enqueue(adjVertex)
-			fmt.Print(adjVertex.Name + "->")
-		}
-	}
-	fmt.Println("end traversing the graph")
-}
-func (g *Graph) BackFirstSet(name string, pas map[string]bool) ([]string, error) {
-
-	// make a que
-	visited := copyMap(pas)
-	q := Q.New()
-	q.Enqueue(g.End)
-	// make a map
-
-	//visited := make(map[*Vertex]bool)
-
-	visited[g.End.Name] = true
-	var from [][2]string
-	if g.Start.Name == g.End.Name {
-		return nil, errors.New("the starting and ending rooms are the same")
-	}
-
-	for !q.IsEmpty() {
-		found := false
-		save := []*Vertex{}
-
-		dequeuedItem := q.Dequeue()
-		e, ok := dequeuedItem.Item.(*Vertex)
-		if !ok {
-			continue
-		}
-		///////////////////////////////////////
-		for i, l := range e.adjacentVerteces {
-			if visited[l.Name] {
-				continue
-			}
-			if l.Name != name {
-				visited[l.Name] = true
-			} else {
-				found = true
-				// break the bind
-				if e == g.Start {
-					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
-
-				}
-			}
-			save = append(save, l)
-			from = append(from, [2]string{e.Name, l.Name})
-			if found {
-				return assemble(from, name), nil
-			}
-		}
-		if !found {
-			for _, el := range save {
-				q.Enqueue(el)
-			}
-		}
-	}
-	return assemble(from, name), nil
-}
-
-// this is used so i don't pass by refrence
-func copyMap(original map[string]bool) map[string]bool {
-	newMap := make(map[string]bool)
-	for key, value := range original {
-		newMap[key] = value
-	}
-	return newMap
 }
 
 // this is used to track the path i used to the end
@@ -196,106 +45,87 @@ func assemble(parts [][2]string, exit string) []string {
 	return path
 }
 
-func (g *Graph) BackFindAllWays() ([][]string, error) {
-	// find the first set
-	name := g.Start.Name
-	var paths [][]string
-	block := make(map[string]bool)
-	var stop = true
-	for stop {
-		ss, err := g.BackFirstSet(name, block)
-		if err != nil {
-			return nil, err
-		}
-		if len(ss) == 0 {
-			stop = false
-			continue
-		}
-		paths = append(paths, ss)
-		for _, s := range ss {
-			if s != name {
-				block[s] = true
-			}
-		}
-	}
-	return paths, nil
-}
-
-func (g *Graph) FindAllWays() ([][]string, error) {
-	// find the first set
-	name := g.End.Name
-	var paths [][]string
-	block := make(map[string]bool)
-	var stop = true
-	for stop {
-		ss, err := g.FirstSet(name, block)
-		if err != nil {
-			return nil, err
-		}
-		if len(ss) == 0 {
-			stop = false
-			continue
-		}
-		paths = append(paths, ss)
-		for _, s := range ss {
-			if s != name {
-				block[s] = true
-			}
-		}
-	}
-	return paths, nil
-}
-func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
-
-	// make a que
-	visited := copyMap(pas)
-	q := Q.New()
-	q.Enqueue(g.Start)
-	// make a map
-
-	//visited := make(map[*Vertex]bool)
-
-	visited[g.Start.Name] = true
-	var from [][2]string
-	if g.Start.Name == g.End.Name {
-		return nil, errors.New("the starting and ending rooms are the same")
-	}
+// BFS to find an augmenting path between from and to
+func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
+	//parent := make(map[*Vertex]*Vertex)
+	parent := [][2]string{}
+	q := queue.New() // Using a simple slice as a queue
+	q.Enqueue(from)
+	visited[from.Name] = true
+	// If we reach the Start node, we can construct the path
 
 	for !q.IsEmpty() {
-		found := false
-		save := []*Vertex{}
+		current := q.Dequeue().Item.(*Vertex)
+		if current == to {
+			return assemble(parent, g.Start.Name)
+		}
+		for _, neighbor := range current.adjacentVerteces {
+			if !visited[neighbor.Name] { // Not visited
+				q.Enqueue(neighbor) // Enqueue
+				visited[neighbor.Name] = true
+				//parent[neighbor] = current
+				parent = append(parent, [2]string{current.Name, neighbor.Name})
+			}
+		}
+	}
+	return nil
+}
+
+func (g *Graph) AllPaths(from, to *Vertex) [][]string {
+	visited := make(map[string]bool)
+	paths := [][]string{}
+	for {
+		path := g.BFS(from, to, utils.CopyMap(visited))
+		if len(path) < 1 {
+			break
+		}
+		paths = append(paths, path)
+		for _, v := range path {
+			if v != g.Start.Name {
+				visited[v] = true
+			}
+		}
+	}
+	return paths
+}
+
+/*#####################################################################*/
+// function of debuging
+/*#####################################################################*/
+
+// this is a function that traverse the graph from -> from tell there
+// is nothing more to traverse
+func (g *Graph) Traverse(from *Vertex) {
+	fmt.Println("start traversing the graph")
+	fmt.Println("this is the start: ", from.Name)
+
+	// Initialize the queue
+	q := Q.New()
+	q.Enqueue(from)
+	// Create a map to track visited vertices
+	visited := make(map[*Vertex]bool)
+	visited[from] = true
+	// Start traversing the graph
+	for !q.IsEmpty() {
 
 		dequeuedItem := q.Dequeue()
 		e, ok := dequeuedItem.Item.(*Vertex)
 		if !ok {
+
 			continue
 		}
-		///////////////////////////////////////
-		for i, l := range e.adjacentVerteces {
-			if visited[l.Name] {
+		// Process all adjacent vertices
+
+		for _, adjVertex := range e.adjacentVerteces {
+
+			if visited[adjVertex] {
 				continue
 			}
-			if l.Name != name {
-				visited[l.Name] = true
-			} else {
-				found = true
-				// break the bind
-				if e == g.End {
-					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
 
-				}
-			}
-			save = append(save, l)
-			from = append(from, [2]string{e.Name, l.Name})
-			if found {
-				return assemble(from, name), nil
-			}
-		}
-		if !found {
-			for _, el := range save {
-				q.Enqueue(el)
-			}
+			visited[adjVertex] = true
+			q.Enqueue(adjVertex)
+			fmt.Print(adjVertex.Name + "->")
 		}
 	}
-	return assemble(from, name), nil
+	fmt.Println("end traversing the graph")
 }

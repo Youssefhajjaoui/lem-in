@@ -17,7 +17,7 @@ func NewVertex(name string) *Vertex {
 	}
 }
 
-// ///////////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////
 // Add_adjacent_vertex adds an adjacent vertex to the current vertex.
 // It ensures that each vertex is only added once in both directions.
 func (v *Vertex) AddAdjacentVertex(vertex *Vertex) error {
@@ -31,20 +31,10 @@ func (v *Vertex) AddAdjacentVertex(vertex *Vertex) error {
 	if err != nil {
 		return err
 	}
-
+	// recursevly add the adjacent vertex to the next end
 	if !alreadyConnected {
 		v.adjacentVerteces = append(v.adjacentVerteces, vertex)
 	}
-
-	// Ensure the adjacent vertex points back to the current vertex
-	alreadyConnected, err = vertex.include(v)
-	if err != nil {
-		return err
-	}
-	if !alreadyConnected {
-		vertex.adjacentVerteces = append(vertex.adjacentVerteces, v)
-	}
-
 	return nil
 }
 
@@ -73,6 +63,8 @@ func (g *Graph) NewVerteces(names []string) {
 	}
 }
 
+// this is used to connect all rooms of the graph at onece
+// it can be used after we add all rooms to the graph
 func (g *Graph) ConnectRooms(edges [][2]string) error {
 	for _, cols := range edges {
 		// Ensure both vertices exist in the snap map
