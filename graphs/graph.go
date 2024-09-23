@@ -1,6 +1,7 @@
 package graphs
 
 import (
+	"errors"
 	"fmt"
 	"lem-in/queue"
 	Q "lem-in/queue"
@@ -38,7 +39,15 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 		current := q.Dequeue().Item.(*Vertex)
 		if current == to {
 			//return assemble(parent, to.Name)
-			return constructPath(parent, from, to)
+			path :=  constructPath(parent, from, to)
+			// case of the start connected to the end
+			if len(path) == 2 {
+				// break the connection forward	
+				g.BreakEndStart()
+
+			}
+			return path
+			
 		}
 		for _, neighbor := range current.adjacentVerteces {
 			if !visited[neighbor.Name] { // Not visited
@@ -78,7 +87,21 @@ func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 	}
 	return path
 }
-
+func (g *Graph)BreakEndStart()error{
+	var s int
+	for i, v  := range  g.End.adjacentVerteces {
+		if v == g.Start {
+			s = i
+			break
+		}
+	}
+	if g.End.adjacentVerteces[s] != g.Start{
+		return errors.New("no connection end start")
+	}else{
+		g.End.adjacentVerteces = append(g.End.adjacentVerteces[:s], g.End.adjacentVerteces[s+1:]...)
+	}
+	return nil
+}
 
 /*##############################################################*/
 // function of debuging

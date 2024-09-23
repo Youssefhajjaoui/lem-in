@@ -37,15 +37,7 @@ func main() {
 		return
 	}
 	/*############# Find the Best Paths ##############*/
-	//all := graph.BFS(graph.Start, graph.End, make(map[string]bool))
-	all := graph.AllPaths(graph.Start, graph.End)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(all)
 	maxFlow, _ := graph.EdmondsKarp()
 	fmt.Println("max flow is: ", maxFlow)
-	fmt.Println("find path again")
 	fmt.Println(graph.AllPaths(graph.End, graph.Start))
 }
