@@ -71,17 +71,55 @@ func (g *Graph) Traverse() {
 	fmt.Println("end traversing the graph")
 }
 
-func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
+// Traverse traverses all the vertices in the graph.
+func (g *Graph) BackwardTraverse() {
+	fmt.Println("start traversing the graph")
+	fmt.Println("this is the start: ", g.End.Name)
+
+	// Initialize the queue
+	q := Q.New()
+	q.Enqueue(g.End)
+
+	// Create a map to track visited vertices
+	visited := make(map[*Vertex]bool)
+	visited[g.End] = true
+	// Start traversing the graph
+	for !q.IsEmpty() {
+
+		dequeuedItem := q.Dequeue()
+		e, ok := dequeuedItem.Item.(*Vertex)
+
+		if !ok {
+
+			continue
+		}
+
+		// Process all adjacent vertices
+
+		for _, adjVertex := range e.adjacentVerteces {
+
+			if visited[adjVertex] {
+				continue
+			}
+
+			visited[adjVertex] = true
+			q.Enqueue(adjVertex)
+			fmt.Print(adjVertex.Name + "->")
+		}
+	}
+	fmt.Println("end traversing the graph")
+}
+func (g *Graph) BackFirstSet(name string, pas map[string]bool) ([]string, error) {
 
 	// make a que
 	visited := copyMap(pas)
 	q := Q.New()
-	q.Enqueue(g.Start)
+	q.Enqueue(g.End)
 	// make a map
 
 	//visited := make(map[*Vertex]bool)
 
-	visited[g.Start.Name] = true
+	visited[g.End.Name] = true
 	var from [][2]string
 	if g.Start.Name == g.End.Name {
 		return nil, errors.New("the starting and ending rooms are the same")
@@ -158,6 +196,31 @@ func assemble(parts [][2]string, exit string) []string {
 	return path
 }
 
+func (g *Graph) BackFindAllWays() ([][]string, error) {
+	// find the first set
+	name := g.Start.Name
+	var paths [][]string
+	block := make(map[string]bool)
+	var stop = true
+	for stop {
+		ss, err := g.BackFirstSet(name, block)
+		if err != nil {
+			return nil, err
+		}
+		if len(ss) == 0 {
+			stop = false
+			continue
+		}
+		paths = append(paths, ss)
+		for _, s := range ss {
+			if s != name {
+				block[s] = true
+			}
+		}
+	}
+	return paths, nil
+}
+
 func (g *Graph) FindAllWays() ([][]string, error) {
 	// find the first set
 	name := g.End.Name
@@ -181,4 +244,58 @@ func (g *Graph) FindAllWays() ([][]string, error) {
 		}
 	}
 	return paths, nil
+}
+func (g *Graph) FirstSet(name string, pas map[string]bool) ([]string, error) {
+
+	// make a que
+	visited := copyMap(pas)
+	q := Q.New()
+	q.Enqueue(g.Start)
+	// make a map
+
+	//visited := make(map[*Vertex]bool)
+
+	visited[g.Start.Name] = true
+	var from [][2]string
+	if g.Start.Name == g.End.Name {
+		return nil, errors.New("the starting and ending rooms are the same")
+	}
+
+	for !q.IsEmpty() {
+		found := false
+		save := []*Vertex{}
+
+		dequeuedItem := q.Dequeue()
+		e, ok := dequeuedItem.Item.(*Vertex)
+		if !ok {
+			continue
+		}
+		///////////////////////////////////////
+		for i, l := range e.adjacentVerteces {
+			if visited[l.Name] {
+				continue
+			}
+			if l.Name != name {
+				visited[l.Name] = true
+			} else {
+				found = true
+				// break the bind
+				if e == g.End {
+					e.adjacentVerteces = append(e.adjacentVerteces[:i], e.adjacentVerteces[i+1:]...)
+
+				}
+			}
+			save = append(save, l)
+			from = append(from, [2]string{e.Name, l.Name})
+			if found {
+				return assemble(from, name), nil
+			}
+		}
+		if !found {
+			for _, el := range save {
+				q.Enqueue(el)
+			}
+		}
+	}
+	return assemble(from, name), nil
 }
