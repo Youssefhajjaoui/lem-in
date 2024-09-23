@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	bfs "lem-in/BFS"
+	graphs "lem-in/graphs"
 	devide "lem-in/devide_ants"
 	fl "lem-in/parse_file"
 )
@@ -16,7 +16,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	graph := bfs.NewGraph()
+	graph := graphs.NewGraph()
 	// get data from file
 	nest, err := fl.FillTheNest(file_name)
 	if err != nil {
@@ -38,15 +38,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	// graph.PrintGraph()
-	// creat start and end
-
-	// graph.Traverse()
-	// all, err := graph.FindAllWays()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
 	graph.AllPaths()
 	all := graph.All
 	fmt.Println("roods found: ", all)
@@ -55,6 +46,5 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	//////////////////////
 	devide.Print(mat)
 }

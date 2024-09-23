@@ -1,4 +1,4 @@
-package bfs
+package graphs
 
 import (
     "testing"
