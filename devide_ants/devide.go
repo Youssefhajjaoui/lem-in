@@ -1,12 +1,10 @@
 package devide
 
-
-
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
-
 
 type Path struct {
 	Rooms     []string
@@ -16,9 +14,11 @@ type Path struct {
 func NewPath() *Path {
 	return &Path{Rooms: []string{}, Passenger: 0}
 }
+
 func (p *Path) Add(room string) {
 	(*p).Rooms = append((*p).Rooms, room)
 }
+
 func (p *Path) Pass() {
 	p.Passenger++
 }
@@ -31,6 +31,7 @@ type Paths []*Path
 func NewPaths() *Paths {
 	return &Paths{}
 }
+
 func (p *Paths) Append(path *Path) {
 	*p = append(*p, path)
 }
@@ -39,16 +40,29 @@ func (p *Paths) Shortest() (*Path, error) {
 	if len(*p) == 0 {
 		return nil, errors.New("no path found")
 	}
-	var shortest = (*p)[0]
+	// var shortest *Path
+	shortest := (*p)[0]
 	for _, path := range *p {
-		if path.Passenger <= shortest.Passenger {
+		if path.Passenger < shortest.Passenger {
 			shortest = path
+
 		}
+		// if path.Passenger ==shortest.Passenger {
+		// 	shortest = path
+		// }
 	}
+	// for i := 0; i < len(*p) - 1; i++ {
+	// 	for j := i+1; j < len(*p); j++ {
+	// 		if {
+				
+	// 		}
+	// 	}
+	// }
 
 	return shortest, nil
 }
-func Devide(ways [][]string, ants int) ([][]string, error) {
+
+func Devide(ways [][]string, ants int) ([][]string, int , error) {
 	// make new paths
 	paths := NewPaths()
 	for _, p := range ways {
@@ -56,8 +70,8 @@ func Devide(ways [][]string, ants int) ([][]string, error) {
 		path := NewPath()
 		for _, room := range p {
 			path.Add(room)
-			path.Pass()
 		}
+		path.Passenger = len(path.Rooms) - 2
 		paths.Append(path)
 	}
 
@@ -66,15 +80,16 @@ func Devide(ways [][]string, ants int) ([][]string, error) {
 	for i := 1; i <= ants; i++ {
 		short, err := paths.Shortest()
 		if err != nil {
-			return nil, err
-
+			return nil,0 , err
 		}
 		short.Pass()
 		took := antpath(i, short.Rooms)
 		show = append(show, took)
 	}
+	max := MaxSteps(paths) 
+	fmt.Println(max)
 	mat := Retate(show)
-	return mat, nil
+	return mat,max, nil
 }
 
 func antpath(ant int, path []string) []string {
@@ -86,6 +101,7 @@ func antpath(ant int, path []string) []string {
 	}
 	return took
 }
+
 func Retate(matrix [][]string) [][]string {
 	result := [][]string{}
 	stop := true
@@ -104,7 +120,6 @@ func Retate(matrix [][]string) [][]string {
 					line = append(line, branch[y])
 				} else {
 					matrix[i] = append([]string{""}, branch...)
-
 				}
 			}
 		}
@@ -122,7 +137,7 @@ func Check(words []string, word string) bool {
 	}
 
 	// Get the last character of the word
-	lastChar := string(word[len(word)-1])
+	lastChar := strings.Split(word, "-")[1]
 
 	// Compare with the last characters of words in the slice
 	for _, w := range words {
@@ -132,10 +147,11 @@ func Check(words []string, word string) bool {
 		}
 
 		// Get the last character of the word in the slice
-		lastCharInSlice := string(w[len(w)-1])
+		lastCharInSlice := strings.Split(w, "-")[1]
 
 		// Compare the last characters
 		if lastChar == lastCharInSlice {
+			// fmt.Printf("%s == %s\n", lastCharInSlice, lastChar)
 			return true
 		}
 	}
@@ -159,4 +175,15 @@ func Print(mat [][]string) {
 		}
 		fmt.Println()
 	}
+}
+
+func MaxSteps(paths *Paths) int {
+	max := 0
+	for _, v := range *paths {
+		fmt.Println(v.Passenger)
+		if v.Passenger >= max {
+			max = v.Passenger
+		}
+	}
+	return max
 }

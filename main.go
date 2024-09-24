@@ -43,7 +43,7 @@ func main() {
 	all := graph.AllPaths(graph.End, graph.Start)
 	fmt.Println(all)
 	/*############# Devide The Ants ##################*/
-	mat, err := devide.Devide(all, nest.Ants)
+	mat, _, err := devide.Devide(all, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
