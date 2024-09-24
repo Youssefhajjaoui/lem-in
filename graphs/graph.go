@@ -45,11 +45,12 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 				// break the connection forward
 				err := g.breakEndStart()
 				fmt.Println(err)
-				return nil
+				//return nil
 			}
 			return path
 
 		}
+
 		for _, neighbor := range current.adjacentVerteces {
 			if !visited[neighbor.Name] { // Not visited
 				q.Enqueue(neighbor) // Enqueue
@@ -91,22 +92,15 @@ func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 	}
 	return path
 }
+
 func (g *Graph) breakEndStart() error {
-	var s int
-	for i, v := range g.End.adjacentVerteces {
-		if v == g.Start {
-			s = i
-			break
+	for i := 0; i < len(g.End.adjacentVerteces); i++ {
+		if g.End.adjacentVerteces[i] == g.Start {
+			g.End.adjacentVerteces = append(g.End.adjacentVerteces[:i], g.End.adjacentVerteces[i+1:]...)
+			return nil
 		}
 	}
-	if g.End.adjacentVerteces[s] != g.Start {
-		return errors.New("no connection end start")
-	} else {
-		fmt.Println(g.End.adjacentVerteces)
-		g.End.adjacentVerteces = append(g.End.adjacentVerteces[:s], g.End.adjacentVerteces[s+1:]...)
-		fmt.Println(g.End.adjacentVerteces)
-	}
-	return nil
+	return errors.New("not start end connection found")
 }
 
 /*##############################################################*/
