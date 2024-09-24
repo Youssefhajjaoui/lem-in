@@ -39,22 +39,23 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 		current := q.Dequeue().Item.(*Vertex)
 		if current == to {
 			//return assemble(parent, to.Name)
-			path :=  constructPath(parent, from, to)
+			path := constructPath(parent, to, from)
 			// case of the start connected to the end
 			if len(path) == 2 {
-				// break the connection forward	
+				// break the connection forward
 				err := g.breakEndStart()
 				fmt.Println(err)
 				return nil
 			}
 			return path
-			
+
 		}
 		for _, neighbor := range current.adjacentVerteces {
 			if !visited[neighbor.Name] { // Not visited
 				q.Enqueue(neighbor) // Enqueue
 				visited[neighbor.Name] = true
-				parent[current] = neighbor
+				//parent[current] = neighbor
+				parent[neighbor] = current
 
 			}
 		}
@@ -90,17 +91,17 @@ func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 	}
 	return path
 }
-func (g *Graph)breakEndStart()error{
+func (g *Graph) breakEndStart() error {
 	var s int
-	for i, v  := range  g.End.adjacentVerteces {
+	for i, v := range g.End.adjacentVerteces {
 		if v == g.Start {
 			s = i
 			break
 		}
 	}
-	if g.End.adjacentVerteces[s] != g.Start{
+	if g.End.adjacentVerteces[s] != g.Start {
 		return errors.New("no connection end start")
-	}else{
+	} else {
 		fmt.Println(g.End.adjacentVerteces)
 		g.End.adjacentVerteces = append(g.End.adjacentVerteces[:s], g.End.adjacentVerteces[s+1:]...)
 		fmt.Println(g.End.adjacentVerteces)
