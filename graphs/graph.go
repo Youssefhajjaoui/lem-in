@@ -88,7 +88,7 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 	var path []string
 	for v := from; v != nil; v = parent[v] { // Fix here: start from end
-		path = append(path, v.Name) // Prepend the node
+		path = append([]string{v.Name}, path...) // Prepend the node
 	}
 	return path
 }
