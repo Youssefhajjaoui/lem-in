@@ -17,6 +17,20 @@ type Nest struct {
 	End    string
 	Ants   int
 }
+func GetFileName(args []string) (string, error) {
+    if len(args) != 1 {
+        return "", errors.New("Bad Arguments")
+    }
+    arg := args[0]
+    if !strings.HasSuffix(arg, ".txt") {
+        return "", errors.New("only files with .txt extension allowed")
+    }
+/*	if strings.Contains(arg , "/"){
+		return "", errors.New("invalid path, only file from the working derectory are allowed")
+	}*/
+    return arg, nil
+}
+
 
 // fix the case of starnt and end
 // remove them after you use them.
@@ -45,7 +59,7 @@ func FillTheNest(filename string) (Nest, error) {
 }
 
 func Parse(result []string) (Nest, error) {
-	fmt.Println(len(result))
+
 	var nest Nest
 	if len(result) == 0 {
 		return nest, errors.New("empty file")

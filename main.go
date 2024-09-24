@@ -2,52 +2,52 @@ package main
 
 import (
 	"fmt"
-	"os"
-
-	bfs "lem-in/BFS"
 	devide "lem-in/devide_ants"
+	graphs "lem-in/graphs"
 	fl "lem-in/parse_file"
+	"os"
 )
 
 func main() {
+	/*############ Parsing the File ###############*/
 	// declare a new graph
-	graph := bfs.NewGraph()
+	file_name, err := fl.GetFileName(os.Args[1:])
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	// get data from file
-	filename := "data.txt"
-	if len(os.Args[1:]) != 0 {
-		filename = os.Args[1]
-	}
-	nest, err := fl.FillTheNest(filename)
+	nest, err := fl.FillTheNest(file_name)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-
+	/*############ Making the Graph ##############*/
+	graph := graphs.NewGraph()
 	// snap is a map name *vertex.
-	snap := graph.NewVerteces(nest.Rooms)
-	graph.Start = snap[nest.Start]
-	graph.End = snap[nest.End]
-
+	// snap :=
+	graph.NewVerteces(nest.Rooms)
+	// graph.Start = snap[nest.Start]
+	// graph.End = snap[nest.End]
+	graph.Start = graph.Verteces[nest.Start]
+	graph.End = graph.Verteces[nest.End]
 	// creat edges relations betwen vertexes
-	err = bfs.ConnectRooms(nest.Tunels, snap)
-
-	fmt.Println("again start: ", graph.Start)
-	fmt.Println("again end: ", graph.End)
+	err = graph.ConnectRooms(nest.Tunels)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	// creat start and end
-	graph.PrintGraph()
-	graph.Traverse()
-	all := graph.FindAllWays()
+	/*############# Find the Best Paths ##############*/
+	maxFlow, _ := graph.EdmondsKarp()
+	fmt.Println("max flow is: ", maxFlow)
+	all := graph.AllPaths(graph.End, graph.Start)
 	fmt.Println(all)
-	mat, err := devide.Devide(all, 3)
+	/*############# Devide The Ants ##################*/
+	mat, err := devide.Devide(all, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	//////////////////////
-	fmt.Println("/////////////////////////")
 	devide.Print(mat)
 }

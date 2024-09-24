@@ -1,9 +1,12 @@
 package devide
 
+
+
 import (
 	"errors"
 	"fmt"
 )
+
 
 type Path struct {
 	Rooms     []string
@@ -31,6 +34,7 @@ func NewPaths() *Paths {
 func (p *Paths) Append(path *Path) {
 	*p = append(*p, path)
 }
+
 func (p *Paths) Shortest() (*Path, error) {
 	if len(*p) == 0 {
 		return nil, errors.New("no path found")
@@ -41,6 +45,7 @@ func (p *Paths) Shortest() (*Path, error) {
 			shortest = path
 		}
 	}
+
 	return shortest, nil
 }
 func Devide(ways [][]string, ants int) ([][]string, error) {
@@ -57,10 +62,12 @@ func Devide(ways [][]string, ants int) ([][]string, error) {
 	}
 
 	show := [][]string{}
+
 	for i := 1; i <= ants; i++ {
 		short, err := paths.Shortest()
 		if err != nil {
 			return nil, err
+
 		}
 		short.Pass()
 		took := antpath(i, short.Rooms)
@@ -90,12 +97,14 @@ func Retate(matrix [][]string) [][]string {
 			branch := matrix[i]
 			if len(branch) > y {
 				stop = true
+
 				if y == len(branch)-1 {
 					line = append(line, branch[y])
 				} else if !Check(line, branch[y]) {
 					line = append(line, branch[y])
 				} else {
 					matrix[i] = append([]string{""}, branch...)
+
 				}
 			}
 		}
