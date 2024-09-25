@@ -24,7 +24,7 @@ func (g *Graph) Add(v *Vertex) {
 }
 
 // BFS to find an augmenting path between from and to
-func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
+func (g *Graph) BFS(from, to *Vertex, visited map[string]bool, reverse bool) []string {
 
 	//parent := make(map[*Vertex]*Vertex)
 	//parent := [][2]string{}
@@ -40,7 +40,7 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 		current := q.Dequeue().Item.(*Vertex)
 		if current == to {
 			//return assemble(parent, to.Name)
-			path := constructPath(parent, to, from)
+			path := constructPath(parent, to, from, reverse)
 			// case of the start connected to the end
 			if len(path) == 2 {
 				// break the connection forward
@@ -69,12 +69,12 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 	return nil
 }
 
-func (g *Graph) AllPaths(from, to *Vertex) [][]string {
+func (g *Graph) AllPaths(from, to *Vertex, reverse bool) [][]string {
 	visited := make(map[string]bool)
 	paths := [][]string{}
 	broke := false
 	for {
-		path := g.BFS(from, to, utils.CopyMap(visited))
+		path := g.BFS(from, to, utils.CopyMap(visited), reverse)
 		if len(path) < 1 {
 			break
 		}
@@ -96,10 +96,14 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 }
 
 // Helper function to reconstruct the path from parent map
-func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
+func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex, reverse bool) []string {
 	var path []string
 	for v := from; v != nil; v = parent[v] { // Fix here: start from end
-		path = append([]string{v.Name}, path...) // Prepend the node
+		if reverse {
+			path = append([]string{v.Name}, path...) // Prepend the node
+		} else {
+			path = append(path, v.Name) // Prepend the node
+		}
 	}
 	return path
 }
