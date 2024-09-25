@@ -80,12 +80,13 @@ func (g *Graph) AllPaths(from, to *Vertex, reverse bool) [][]string {
 		}
 		paths = append(paths, path)
 		if len(path) != 2 {
-			broke = true
 			for _, v := range path {
 				if v != to.Name {
 					visited[v] = true
 				}
 			}
+		} else {
+			broke = true
 		}
 
 	}
