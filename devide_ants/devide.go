@@ -55,6 +55,7 @@ func (p *Paths) Shortest() (*Path, error) {
 func Devide(ways [][]string, ants int) ([][]string, int, error) {
 	// make new paths
 	paths := NewPaths()
+	// fil paths with every path and how many passengers it takes
 	for _, p := range ways {
 		// make new path
 		path := NewPath()
@@ -64,9 +65,9 @@ func Devide(ways [][]string, ants int) ([][]string, int, error) {
 		path.Passenger = len(path.Rooms) - 2
 		paths.Append(path)
 	}
-
+	// show is what i show to the user
 	show := [][]string{}
-
+	// give all the paths their ants
 	for i := 1; i <= ants; i++ {
 		short, err := paths.Shortest()
 		if err != nil {
@@ -76,6 +77,7 @@ func Devide(ways [][]string, ants int) ([][]string, int, error) {
 		took := antpath(i, short.Rooms)
 		show = append(show, took)
 	}
+
 	max := MaxSteps(paths)
 	mat := Retate(show)
 	return mat, max, nil
@@ -83,14 +85,15 @@ func Devide(ways [][]string, ants int) ([][]string, int, error) {
 
 func antpath(ant int, path []string) []string {
 	took := []string{}
+	// why not printing the first room
 	for i := len(path) - 2; i >= 0; i-- {
 		room := path[i]
 		took = append(took, fmt.Sprintf("L%d-%s", ant, room))
-
 	}
 	return took
 }
 
+// change the view from horizontal to vertical
 func Retate(matrix [][]string) [][]string {
 	result := [][]string{}
 	stop := true
@@ -99,10 +102,10 @@ func Retate(matrix [][]string) [][]string {
 		stop = false
 		line := []string{}
 		for i := 0; i < len(matrix); i++ {
+			// make a special case for branches with len 2
 			branch := matrix[i]
 			if len(branch) > y {
 				stop = true
-
 				if y == len(branch)-1 {
 					line = append(line, branch[y])
 				} else if !Check(line, branch[y]) {
@@ -126,7 +129,7 @@ func Check(words []string, word string) bool {
 	}
 
 	// Get the last character of the word
-	lastChar := strings.Split(word, "-")[1]
+	lastTerm := strings.Split(word, "-")[1]
 
 	// Compare with the last characters of words in the slice
 	for _, w := range words {
@@ -134,13 +137,11 @@ func Check(words []string, word string) bool {
 		if len(w) == 0 {
 			continue
 		}
-
 		// Get the last character of the word in the slice
-		lastCharInSlice := strings.Split(w, "-")[1]
+		lastTermInSlice := strings.Split(w, "-")[1]
 
 		// Compare the last characters
-		if lastChar == lastCharInSlice {
-			// fmt.Printf("%s == %s\n", lastCharInSlice, lastChar)
+		if lastTerm == lastTermInSlice {
 			return true
 		}
 	}
@@ -148,8 +149,19 @@ func Check(words []string, word string) bool {
 	return false
 }
 
+func MaxSteps(paths *Paths) int {
+	max := 0
+	for _, v := range *paths {
+		if v.Passenger >= max {
+			max = v.Passenger
+		}
+	}
+	return max
+}
+
 // desplay the result to on the terminal
 func Print(mat [][]string) {
+
 	for _, line := range mat {
 		if len(line) == 0 {
 			continue
@@ -164,14 +176,4 @@ func Print(mat [][]string) {
 		}
 		fmt.Println()
 	}
-}
-
-func MaxSteps(paths *Paths) int {
-	max := 0
-	for _, v := range *paths {
-		if v.Passenger >= max {
-			max = v.Passenger
-		}
-	}
-	return max
 }

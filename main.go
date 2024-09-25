@@ -40,21 +40,34 @@ func main() {
 	/*############# Find the Best Paths ##############*/
 	simple_paths := graph.AllPaths(graph.Start, graph.End, false)
 	fmt.Println("simple paths: ", simple_paths)
-	_, steps, _ := devide.Devide(simple_paths, nest.Ants)
-	fmt.Println("steps of simple path: ", steps)
+	simple, fsteps, err := devide.Devide(simple_paths, nest.Ants)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("steps of simple path: ", fsteps)
 
 	maxFlow, _ := graph.EdmondsKarp()
 	fmt.Println("max flow is: ", maxFlow)
 	edmonds := graph.AllPaths(graph.End, graph.Start, true)
 	fmt.Println("edmons paths: ", edmonds)
-	_, steps, _ = devide.Devide(edmonds, nest.Ants)
-	fmt.Println("steps of edmonds are: ", steps)
+	carp, lsteps, err := devide.Devide(edmonds, nest.Ants)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("steps of edmonds are: ", lsteps)
+
 	/*############# Devide The Ants ##################*/
-	/*mat, _, err := devide.Devide(all, nest.Ants)
+	steps := [][]string{}
+	if fsteps <= lsteps {
+		steps = simple
+	} else {
+		steps = carp
+	}
+	mat, _, err := devide.Devide(steps, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	devide.Print(mat)*/
+	devide.Print(mat)
 	//////////////////////
 }
