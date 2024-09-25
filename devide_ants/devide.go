@@ -3,6 +3,7 @@ package devide
 import (
 	"errors"
 	"fmt"
+
 	"strings"
 )
 
@@ -47,22 +48,11 @@ func (p *Paths) Shortest() (*Path, error) {
 			shortest = path
 
 		}
-		// if path.Passenger ==shortest.Passenger {
-		// 	shortest = path
-		// }
 	}
-	// for i := 0; i < len(*p) - 1; i++ {
-	// 	for j := i+1; j < len(*p); j++ {
-	// 		if {
-				
-	// 		}
-	// 	}
-	// }
-
 	return shortest, nil
 }
 
-func Devide(ways [][]string, ants int) ([][]string, int , error) {
+func Devide(ways [][]string, ants int) ([][]string, int, error) {
 	// make new paths
 	paths := NewPaths()
 	for _, p := range ways {
@@ -80,16 +70,15 @@ func Devide(ways [][]string, ants int) ([][]string, int , error) {
 	for i := 1; i <= ants; i++ {
 		short, err := paths.Shortest()
 		if err != nil {
-			return nil,0 , err
+			return nil, 0, err
 		}
 		short.Pass()
 		took := antpath(i, short.Rooms)
 		show = append(show, took)
 	}
-	max := MaxSteps(paths) 
-	fmt.Println(max)
+	max := MaxSteps(paths)
 	mat := Retate(show)
-	return mat,max, nil
+	return mat, max, nil
 }
 
 func antpath(ant int, path []string) []string {
@@ -180,7 +169,6 @@ func Print(mat [][]string) {
 func MaxSteps(paths *Paths) int {
 	max := 0
 	for _, v := range *paths {
-		fmt.Println(v.Passenger)
 		if v.Passenger >= max {
 			max = v.Passenger
 		}
