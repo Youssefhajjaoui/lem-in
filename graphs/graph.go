@@ -45,7 +45,7 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 				// break the connection forward
 				err := g.breakEndStart()
 				fmt.Println(err)
-				//return nil
+				return nil
 			}
 			return path
 

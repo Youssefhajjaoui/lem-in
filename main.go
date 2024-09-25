@@ -38,16 +38,23 @@ func main() {
 		return
 	}
 	/*############# Find the Best Paths ##############*/
+	simple_paths := graph.AllPaths(graph.Start, graph.End)
+	fmt.Println("simple paths: ", simple_paths)
+	weight := devide.Weight(simple_paths, nest.Ants)
+	fmt.Println("wieght of simple path: " , weight)
+
 	maxFlow, _ := graph.EdmondsKarp()
 	fmt.Println("max flow is: ", maxFlow)
-	all := graph.AllPaths(graph.End, graph.Start)
-	fmt.Println(all)
+	edmonds := graph.AllPaths(graph.End, graph.Start)
+	fmt.Println("edmons paths: ",edmonds)
+	weight = devide.Weight(edmonds, nest.Ants)
+	fmt.Println("the steps taking are: ", weight)
 	/*############# Devide The Ants ##################*/
-	mat, _, err := devide.Devide(all, nest.Ants)
+	/*mat, _, err := devide.Devide(all, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	devide.Print(mat)*/
 	//////////////////////
-	devide.Print(mat)
 }
