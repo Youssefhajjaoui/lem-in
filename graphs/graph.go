@@ -32,6 +32,7 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 	q := queue.New() // Using a simple slice as a queue
 	q.Enqueue(from)
 	visited[from.Name] = true
+
 	// If we reach the Start node, we can construct the path
 
 	for !q.IsEmpty() {
@@ -44,8 +45,11 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 			if len(path) == 2 {
 				// break the connection forward
 				err := g.breakEndStart()
-				fmt.Println(err)
-				return nil
+				if err != nil {
+					fmt.Println(err)
+					return nil
+				}
+				return path
 			}
 			return path
 
@@ -61,12 +65,14 @@ func (g *Graph) BFS(from, to *Vertex, visited map[string]bool) []string {
 			}
 		}
 	}
+
 	return nil
 }
 
 func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 	visited := make(map[string]bool)
 	paths := [][]string{}
+	broke := false
 	for {
 		path := g.BFS(from, to, utils.CopyMap(visited))
 		if len(path) < 1 {
@@ -74,12 +80,17 @@ func (g *Graph) AllPaths(from, to *Vertex) [][]string {
 		}
 		paths = append(paths, path)
 		if len(path) != 2 {
+			broke = true
 			for _, v := range path {
 				if v != to.Name {
 					visited[v] = true
 				}
 			}
 		}
+
+	}
+	if broke {
+		g.Start.AddAdjacentVertex(g.End)
 	}
 	return paths
 }
@@ -94,12 +105,20 @@ func constructPath(parent map[*Vertex]*Vertex, from, to *Vertex) []string {
 }
 
 func (g *Graph) breakEndStart() error {
+	for i := 0; i < len(g.Start.adjacentVerteces); i++ {
+		if g.Start.adjacentVerteces[i] == g.End {
+			g.Start.adjacentVerteces = append(g.Start.adjacentVerteces[:i], g.Start.adjacentVerteces[i+1:]...)
+
+		}
+	}
 	for i := 0; i < len(g.End.adjacentVerteces); i++ {
 		if g.End.adjacentVerteces[i] == g.Start {
 			g.End.adjacentVerteces = append(g.End.adjacentVerteces[:i], g.End.adjacentVerteces[i+1:]...)
 			return nil
 		}
+
 	}
+
 	return errors.New("not start end connection found")
 }
 
