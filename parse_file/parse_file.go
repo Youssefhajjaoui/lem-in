@@ -3,9 +3,9 @@ package parse_file
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"strconv"
 
-	"fmt"
 	"os"
 	"strings"
 )
@@ -17,20 +17,20 @@ type Nest struct {
 	End    string
 	Ants   int
 }
+
 func GetFileName(args []string) (string, error) {
-    if len(args) != 1 {
-        return "", errors.New("Bad Arguments")
-    }
-    arg := args[0]
-    if !strings.HasSuffix(arg, ".txt") {
-        return "", errors.New("only files with .txt extension allowed")
-    }
-/*	if strings.Contains(arg , "/"){
+	if len(args) != 1 {
+		return "", errors.New("Bad Arguments")
+	}
+	arg := args[0]
+	if !strings.HasSuffix(arg, ".txt") {
+		return "", errors.New("only files with .txt extension allowed")
+	}
+	/*	if strings.Contains(arg , "/"){
 		return "", errors.New("invalid path, only file from the working derectory are allowed")
 	}*/
-    return arg, nil
+	return arg, nil
 }
-
 
 // fix the case of starnt and end
 // remove them after you use them.
@@ -46,6 +46,7 @@ func FillTheNest(filename string) (Nest, error) {
 	Scanner := bufio.NewScanner(file)
 	for Scanner.Scan() {
 		line := strings.TrimSpace(Scanner.Text())
+		fmt.Println(line)
 		if len(line) == 0 {
 			continue
 		}
@@ -54,6 +55,7 @@ func FillTheNest(filename string) (Nest, error) {
 		}
 		result = append(result, line)
 	}
+	fmt.Println()
 	nest, err = Parse(result)
 	return nest, err
 }
@@ -130,7 +132,7 @@ func Parse(result []string) (Nest, error) {
 			tunel, err := GetTunel(arg)
 			if err != nil || len(tunel) == 0 {
 				// Optionally log the error for debugging purposes
-				fmt.Printf("Error getting tunnel: %v\n", err)
+
 				continue
 			}
 			nest.Tunels = append(nest.Tunels, tunel)
