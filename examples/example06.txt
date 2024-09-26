@@ -1,17 +1,10 @@
-$
-
-Does it present the right result as above?
-Try running the program with badexample01.
-
-$ go run . badexample01.txt
-ERROR: invalid data format
-$
-
-Does it present at least the result above?
-Try running the program with example06 and with 100 ants.
-Is the real time less than 1.5 minutes?
-Try running the program with example07 and with 1000 ants.
-Is the real time less than 2.5 minutes?
-Try running the program with a valid example of your choice.
-Are the ants alone in each room?
-Is each tunnel only used on
+1000
+##start
+0 0 3
+2 2 5
+3 4 0
+##end
+1 8 3
+0-2
+2-3
+3-1

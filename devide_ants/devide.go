@@ -44,9 +44,8 @@ func (p *Paths) Shortest() (*Path, error) {
 	// var shortest *Path
 	shortest := (*p)[0]
 	for _, path := range *p {
-		if path.Passenger < shortest.Passenger {
+		if path.Passenger <= shortest.Passenger {
 			shortest = path
-
 		}
 	}
 	return shortest, nil
