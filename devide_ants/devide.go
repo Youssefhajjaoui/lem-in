@@ -79,7 +79,9 @@ func Devide(ways [][]string, ants int) ([][]string, int, error) {
 	}
 
 	max := MaxSteps(paths)
+
 	mat := Retate(show)
+
 	return mat, max, nil
 }
 
@@ -95,6 +97,7 @@ func antpath(ant int, path []string) []string {
 
 // change the view from horizontal to vertical
 func Retate(matrix [][]string) [][]string {
+
 	result := [][]string{}
 	stop := true
 	y := 0

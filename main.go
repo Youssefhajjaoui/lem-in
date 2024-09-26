@@ -63,11 +63,10 @@ func main() {
 	} else {
 		steps = carp
 	}
-	mat, _, err := devide.Devide(steps, nest.Ants)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	devide.Print(mat)
+	devide.Print(steps)
 	//////////////////////
 }
