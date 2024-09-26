@@ -52,7 +52,7 @@ func (p *Paths) Shortest() (*Path, error) {
 	return shortest, nil
 }
 
-func Devide(ways [][]string, ants int) ([][]string, int, error) {
+func Devide(ways [][]string, ants int, end string) ([][]string, int, error) {
 	// make new paths
 	paths := NewPaths()
 	// fil paths with every path and how many passengers it takes
@@ -67,20 +67,26 @@ func Devide(ways [][]string, ants int) ([][]string, int, error) {
 	}
 	// show is what i show to the user
 	show := [][]string{}
+	special := []string{}
+	took := []string{}
 	// give all the paths their ants
 	for i := 1; i <= ants; i++ {
 		short, err := paths.Shortest()
 		if err != nil {
 			return nil, 0, err
 		}
+		if len(short.Rooms) == 2 {
+			special = append(special, antpath(i, short.Rooms)...)
+		} else {
+			took = antpath(i, short.Rooms)
+			show = append(show, took)
+		}
 		short.Pass()
-		took := antpath(i, short.Rooms)
-		show = append(show, took)
 	}
-
+	show = append(show, special)
 	max := MaxSteps(paths)
 
-	mat := Retate(show)
+	mat := Retate(show, end)
 
 	return mat, max, nil
 }
@@ -96,7 +102,7 @@ func antpath(ant int, path []string) []string {
 }
 
 // change the view from horizontal to vertical
-func Retate(matrix [][]string) [][]string {
+func Retate(matrix [][]string, end string) [][]string {
 
 	result := [][]string{}
 	stop := true
@@ -105,13 +111,14 @@ func Retate(matrix [][]string) [][]string {
 		stop = false
 		line := []string{}
 		for i := 0; i < len(matrix); i++ {
-			// make a special case for branches with len 2
+			// make a special case for branches with len 1
 			branch := matrix[i]
+
 			if len(branch) > y {
 				stop = true
 				if y == len(branch)-1 {
 					line = append(line, branch[y])
-				} else if !Check(line, branch[y]) {
+				} else if !Check(line, branch[y], end) {
 					line = append(line, branch[y])
 				} else {
 					matrix[i] = append([]string{""}, branch...)
@@ -125,7 +132,7 @@ func Retate(matrix [][]string) [][]string {
 }
 
 // to not use the same room at the same time
-func Check(words []string, word string) bool {
+func Check(words []string, word string, end string) bool {
 	// Ensure the input word is not empty
 	if len(word) == 0 {
 		return false
@@ -144,7 +151,7 @@ func Check(words []string, word string) bool {
 		lastTermInSlice := strings.Split(w, "-")[1]
 
 		// Compare the last characters
-		if lastTerm == lastTermInSlice {
+		if lastTerm == lastTermInSlice && lastTermInSlice != end {
 			return true
 		}
 	}

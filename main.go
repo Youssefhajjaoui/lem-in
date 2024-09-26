@@ -40,7 +40,7 @@ func main() {
 	/*############# Find the Best Paths ##############*/
 	simple_paths := graph.AllPaths(graph.Start, graph.End, false)
 	fmt.Println("simple paths: ", simple_paths)
-	simple, fsteps, err := devide.Devide(simple_paths, nest.Ants)
+	simple, fsteps, err := devide.Devide(simple_paths, nest.Ants, graph.End.Name)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -50,7 +50,7 @@ func main() {
 	fmt.Println("max flow is: ", maxFlow)
 	edmonds := graph.AllPaths(graph.End, graph.Start, true)
 	fmt.Println("edmons paths: ", edmonds)
-	carp, lsteps, err := devide.Devide(edmonds, nest.Ants)
+	carp, lsteps, err := devide.Devide(edmonds, nest.Ants, graph.End.Name)
 	if err != nil {
 		fmt.Println(err)
 	}
